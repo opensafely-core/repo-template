@@ -5,7 +5,6 @@ This is a template for an OpenSAFELY Core repository.
 Put your project description here.
 
 New repo checklist:
-- [ ] Is this repo a package? If not, delete setup.py
 - [ ] Does the repo require a Dockerfile?
   If not, delete:
   - Dockerfile -
