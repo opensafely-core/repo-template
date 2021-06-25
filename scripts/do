@@ -41,7 +41,7 @@ dev_setup () {
   # yet, assure we need to install them all
   if [[ ! -f "$VIRTUAL_ENV/bin/black" ]]; then
     echo "Installing dev requirements"
-    $VIRTUAL_ENV/bin/pip install -r requirements.dev.txt
+    $VIRTUAL_ENV/bin/pip install --require-hashes -r requirements.dev.txt
   fi
 
   # Ensure pre-commit has been set up
