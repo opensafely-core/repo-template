@@ -95,3 +95,8 @@ htmlcov
 
 # IDEs
 .idea/
+
+
+# Virtual environments
+.venv/
+venv/

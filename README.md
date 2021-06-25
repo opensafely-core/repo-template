@@ -12,7 +12,7 @@ New repo checklist:
   - hadolint pre-commit hook from `.pre-commit-config.yaml`
   - `lint-dockerfile` action from `.github/workflows/main.yml`
 - [ ] Update DEVELOPERS.md with any project-specific requirements and commands
-- [ ] Update scripts
+- [ ] Update commands in `scripts/do`
 
 
 ## Developer docs
