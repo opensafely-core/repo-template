@@ -12,7 +12,7 @@ exclude = '''
 
 [tool.coverage.run]
 branch = true
-omit = []
+omit = [".venv/*"]
 
 [tool.coverage.report]
 fail_under = 100
