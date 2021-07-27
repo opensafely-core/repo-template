@@ -16,6 +16,7 @@ jobs:
           export GITHUB_REPOSITORY_NAME="$(echo $GITHUB_REPOSITORY | awk -F/ '{print $2}')"
           envsubst < README.md > tmp && mv tmp README.md
           rm .github/workflows/setup.yml
+          rm tests/test_repo.py
       - name: Do not run on template repository
         id: is_template
         # The only way to trigger this to run when used as a template is on

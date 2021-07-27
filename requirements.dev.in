@@ -12,3 +12,4 @@ flake8-builtins
 flake8-implicit-str-concat
 isort
 pytest
+pytest-coverage
