@@ -15,8 +15,8 @@ repos:
       - "flake8-implicit-str-concat"
       - "flake8-no-pep420"
 
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.10.1
+  - repo: https://github.com/pycqa/isort
+    rev: 5.10.1
     hooks:
     - id: isort
       language_version: python3.9
