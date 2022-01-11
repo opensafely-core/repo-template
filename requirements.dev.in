@@ -4,12 +4,12 @@
 # To generate a requirements file that includes both prod and dev requirements, run:
 # pip-compile --generate-hashes --output-file=requirements.dev.txt requirements.dev.in
 
-pre-commit
 black
 flake8
 flake8-builtins
 flake8-implicit-str-concat
 isort
+pip-tools
+pre-commit
 pytest
 pytest-coverage
-pip-tools
