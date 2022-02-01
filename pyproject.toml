@@ -4,7 +4,10 @@ exclude = '''
   /(
       \.git         # exclude a few common directories
     | \.direnv
+    | \.github
+    | \.pytest_cache
     | \.venv
+    | htmlcov
     | venv
   )/
 )
