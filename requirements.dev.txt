@@ -204,9 +204,9 @@ pyparsing==2.4.7 \
     --hash=sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1 \
     --hash=sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b
     # via packaging
-pytest==6.2.5 \
-    --hash=sha256:131b36680866a76e6781d13f101efb86cf674ebb9762eb70d3082b6f29889e89 \
-    --hash=sha256:7310f8d27bc79ced999e760ca304d69f6ba6c6649c0b60fb0e04a4a77cacc134
+pytest==7.0.0 \
+    --hash=sha256:42901e6bd4bd4a0e533358a86e848427a49005a3256f657c5c8f8dd35ef137a9 \
+    --hash=sha256:dad48ffda394e5ad9aa3b7d7ddf339ed502e5e365b1350e0af65f4a602344b11
     # via
     #   -r requirements.dev.in
     #   pytest-cov
@@ -262,7 +262,6 @@ toml==0.10.2 \
     --hash=sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f
     # via
     #   pre-commit
-    #   pytest
     #   pytest-cov
 tomli==1.1.0 \
     --hash=sha256:33d7984738f8bb699c9b0a816eb646a8178a69eaa792d258486776a5d21b8ca5 \
@@ -270,6 +269,7 @@ tomli==1.1.0 \
     # via
     #   black
     #   pep517
+    #   pytest
 virtualenv==20.6.0 \
     --hash=sha256:51df5d8a2fad5d1b13e088ff38a433475768ff61f202356bb9812c454c20ae45 \
     --hash=sha256:e4fc84337dce37ba34ef520bf2d4392b392999dbe47df992870dc23230f6b758
