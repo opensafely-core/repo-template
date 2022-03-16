@@ -18,6 +18,8 @@ New repo checklist:
     manage.py:INP001
     gunicorn.conf.py:INP001
   ```
+- [ ] Will this project be installed with pip?
+  If so, delete `requirements.prod.in` and switch references in the `justfile` to `pyproject.toml`
 - [ ] Update DEVELOPERS.md with any project-specific requirements and commands
 - [ ] Update commands in `justfile`
 
