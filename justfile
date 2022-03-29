@@ -12,7 +12,7 @@ export DEFAULT_PYTHON := if os_family() == "unix" { "python3.10" } else { "pytho
 
 # list available commands
 default:
-    @{{ just_executable() }} --list
+    @"{{ just_executable() }}" --list
 
 
 # clean up temporary files
@@ -42,12 +42,12 @@ _compile src dst *args: virtualenv
 
 # update requirements.prod.txt if requirements.prod.in has changed
 requirements-prod *args:
-    {{ just_executable() }} _compile requirements.prod.in requirements.prod.txt {{ args }}
+    "{{ just_executable() }}" _compile requirements.prod.in requirements.prod.txt {{ args }}
 
 
 # update requirements.dev.txt if requirements.dev.in has changed
 requirements-dev *args: requirements-prod
-    {{ just_executable() }} _compile requirements.dev.in requirements.dev.txt {{ args }}
+    "{{ just_executable() }}" _compile requirements.dev.in requirements.dev.txt {{ args }}
 
 
 # ensure prod requirements installed and up to date
@@ -85,7 +85,7 @@ upgrade env package="": virtualenv
     #!/usr/bin/env bash
     opts="--upgrade"
     test -z "{{ package }}" || opts="--upgrade-package {{ package }}"
-    FORCE=true {{ just_executable() }} requirements-{{ env }} $opts
+    FORCE=true "{{ just_executable() }}" requirements-{{ env }} $opts
 
 
 # *ARGS is variadic, 0 or more. This allows us to do `just test -k match`, for example.
