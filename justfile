@@ -2,11 +2,12 @@
 # so we shell out, as we need VIRTUAL_ENV in the justfile environment
 export VIRTUAL_ENV  := `echo ${VIRTUAL_ENV:-.venv}`
 
-# TODO: make it /scripts on windows?
-export BIN := VIRTUAL_ENV + "/bin"
-export PIP := BIN + "/python -m pip"
+export BIN := VIRTUAL_ENV + if os_family() == "unix" { "/bin" } else { "/Scripts" }
+export PIP := BIN + if os_family() == "unix" { "/python -m pip" } else { "/python.exe -m pip" }
 # enforce our chosen pip compile flags
 export COMPILE := BIN + "/pip-compile --allow-unsafe --generate-hashes"
+
+export DEFAULT_PYTHON := if os_family() == "unix" { "python3.10" } else { "python" }
 
 
 # list available commands
@@ -23,7 +24,7 @@ clean:
 virtualenv:
     #!/usr/bin/env bash
     # allow users to specify python version in .env
-    PYTHON_VERSION=${PYTHON_VERSION:-python3.10}
+    PYTHON_VERSION=${PYTHON_VERSION:-$DEFAULT_PYTHON}
 
     # create venv and upgrade pip
     test -d $VIRTUAL_ENV || { $PYTHON_VERSION -m venv $VIRTUAL_ENV && $PIP install --upgrade pip; }
