@@ -4,8 +4,6 @@ export VIRTUAL_ENV  := `echo ${VIRTUAL_ENV:-.venv}`
 
 export BIN := VIRTUAL_ENV + if os_family() == "unix" { "/bin" } else { "/Scripts" }
 export PIP := BIN + if os_family() == "unix" { "/python -m pip" } else { "/python.exe -m pip" }
-# enforce our chosen pip compile flags
-export COMPILE := BIN + "/pip-compile --allow-unsafe --generate-hashes"
 
 export DEFAULT_PYTHON := if os_family() == "unix" { "python3.10" } else { "python" }
 
