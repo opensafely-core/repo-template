@@ -109,10 +109,6 @@ distlib==0.3.2 \
     --hash=sha256:106fef6dc37dd8c0e2c0a60d3fca3e77460a48907f335fa28420463a6f799736 \
     --hash=sha256:23e223426b28491b1ced97dc3bbe183027419dfc7982b4fa2f05d5f3ff10711c
     # via virtualenv
-exceptiongroup==1.0.1 \
-    --hash=sha256:4d6c0aa6dd825810941c792f53d7b8d71da26f5e5f84f20f9508e8f2d33b140a \
-    --hash=sha256:73866f7f842ede6cb1daa42c4af078e2035e5f7607f0e2c762cc51bb31bbe7b2
-    # via pytest
 filelock==3.0.12 \
     --hash=sha256:18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59 \
     --hash=sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836
@@ -178,9 +174,9 @@ pep517==0.11.0 \
     --hash=sha256:3fa6b85b9def7ba4de99fb7f96fe3f02e2d630df8aa2720a5cf3b183f087a738 \
     --hash=sha256:e1ba5dffa3a131387979a68ff3e391ac7d645be409216b961bc2efe6468ab0b2
     # via build
-pip-tools==6.9.0 \
-    --hash=sha256:16ea0ced6a1d8a7dfbd5e14d5bf659acffa63f3efd0702233dc685f066c00a6b \
-    --hash=sha256:b4762359978fd81a2b4b666e6dca15266bdc65680d06900c4da34243f35e4b5d
+pip-tools==6.10.0 \
+    --hash=sha256:57ac98392548f5ca96c2831927deec3035efe81ff476e3c744bd474ca9c6a1f2 \
+    --hash=sha256:7f9f7356052db6942b5aaabc8eba29983591ca0ad75affbf2f0a25d9361be624
     # via -r requirements.dev.in
 platformdirs==2.2.0 \
     --hash=sha256:4666d822218db6a262bdfdc9c39d21f23b4cfdb08af331a81e92751daf6c866c \
@@ -262,10 +258,7 @@ toml==0.10.2 \
 tomli==1.1.0 \
     --hash=sha256:33d7984738f8bb699c9b0a816eb646a8178a69eaa792d258486776a5d21b8ca5 \
     --hash=sha256:f4a182048010e89cbec0ae4686b21f550a7f2903f665e34a6de58ec15424f919
-    # via
-    #   black
-    #   build
-    #   pytest
+    # via pep517
 virtualenv==20.6.0 \
     --hash=sha256:51df5d8a2fad5d1b13e088ff38a433475768ff61f202356bb9812c454c20ae45 \
     --hash=sha256:e4fc84337dce37ba34ef520bf2d4392b392999dbe47df992870dc23230f6b758
