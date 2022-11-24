@@ -2,15 +2,26 @@
 name: CI
 
 on:
+  # using pull_request ensures CI can run from PRs from forks
+  pull_request:
+  # run CI post merge as Github doesn't do pre-perge action runs, and also to trigger deploys.
   push:
+    branches:
+     - main
+  # enable manually triggering this workflow via the UI for debugging it
+  workflow_dispatch:
 
+
+# Note: 3rd party actions should be pinned by *full* SHA, with a comment indicated the semantic version.
+# This includes all actions that are not owned by our GH orgs, or by the GH owned `actions` org, which we trust.
+# https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-third-party-actions
 jobs:
   check:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-      - uses: "actions/setup-python@v4"
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
           cache: "pip"
@@ -24,7 +35,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: "actions/setup-python@v4"
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
           cache: "pip"
