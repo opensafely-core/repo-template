@@ -4,7 +4,7 @@ name: CI
 on:
   # using pull_request ensures CI can run from PRs from forks
   pull_request:
-  # run CI post merge as Github doesn't do pre-perge action runs, and also to trigger deploys.
+  # run CI post merge as Github doesn't do pre-merge action runs, and also to trigger deploys.
   push:
     branches:
      - main
