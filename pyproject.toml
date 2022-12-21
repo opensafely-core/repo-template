@@ -1,10 +1,13 @@
 [tool.coverage.run]
 branch = true
-omit = [".venv/*"]
+omit = [
+  ".venv/*",
+]
 
 [tool.coverage.report]
 fail_under = 100
 skip_covered = true
+show_missing = true
 
 [tool.coverage.html]
 
