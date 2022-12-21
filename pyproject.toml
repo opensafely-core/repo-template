@@ -1,5 +1,6 @@
 [tool.coverage.run]
 branch = true
+dynamic_context = "test_function"
 omit = [
   ".venv/*",
 ]
@@ -10,6 +11,7 @@ skip_covered = true
 show_missing = true
 
 [tool.coverage.html]
+show_contexts = true
 
 [tool.isort]
 profile = "black"
