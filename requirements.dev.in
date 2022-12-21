@@ -5,7 +5,7 @@
 # pip-compile --generate-hashes --output-file=requirements.dev.txt requirements.dev.in
 
 black
-coverage[toml]
+coverage
 flake8
 flake8-builtins
 flake8-implicit-str-concat
