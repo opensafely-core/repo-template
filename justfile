@@ -5,7 +5,7 @@ export VIRTUAL_ENV  := `echo ${VIRTUAL_ENV:-.venv}`
 export BIN := VIRTUAL_ENV + if os_family() == "unix" { "/bin" } else { "/Scripts" }
 export PIP := BIN + if os_family() == "unix" { "/python -m pip" } else { "/python.exe -m pip" }
 
-export DEFAULT_PYTHON := if os_family() == "unix" { "python3.10" } else { "python" }
+export DEFAULT_PYTHON := if os_family() == "unix" { "python3.11" } else { "python" }
 
 
 # list available commands
