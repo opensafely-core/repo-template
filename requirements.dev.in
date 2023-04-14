@@ -6,11 +6,7 @@
 
 black
 coverage
-flake8
-flake8-builtins
-flake8-implicit-str-concat
-flake8-no-pep420
-isort
 pip-tools
 pre-commit
 pytest
+ruff
