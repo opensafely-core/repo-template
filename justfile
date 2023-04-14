@@ -96,20 +96,17 @@ test *args: devenv
 black *args=".": devenv
     $BIN/black --check {{ args }}
 
-isort *args=".": devenv
-    $BIN/isort --check-only --diff {{args}}
+ruff *args=".": devenv
+    $BIN/ruff check {{ args }}
 
-flake8 *args="": devenv
-    $BIN/flake8 {{ args }}
-
-# runs the format (black), sort (isort) and lint (flake8) check but does not change any files
-check: black isort flake8
+# run the various dev checks but does not change any files
+check: black ruff
 
 
 # fix formatting and import sort ordering
 fix: devenv
     $BIN/black .
-    $BIN/isort .
+    $BIN/ruff --fix .
 
 
 # Run the dev project
