@@ -1,25 +1,21 @@
 default_language_version:
-  python: python3.10
+  python: python3.11
 
 repos:
-  - repo: https://github.com/psf/black
-    rev: 22.3.0
+  - repo: local
     hooks:
     - id: black
-
-  - repo: https://github.com/PyCQA/flake8
-    rev: 4.0.1
-    hooks:
-    - id: flake8
-      additional_dependencies:
-      - "flake8-builtins"
-      - "flake8-implicit-str-concat"
-      - "flake8-no-pep420"
-
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.10.1
-    hooks:
-    - id: isort
+      name: black
+      entry: just black
+      language: system
+      types: [python]
+      require_serial: true
+    - id: ruff
+      name: ruff
+      entry: just ruff
+      language: system
+      types: [python]
+      require_serial: true
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0
