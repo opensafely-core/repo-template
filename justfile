@@ -48,31 +48,26 @@ requirements-prod *args: (_compile 'requirements.prod.in' 'requirements.prod.txt
 requirements-dev *args: requirements-prod (_compile 'requirements.dev.in' 'requirements.dev.txt' args)
 
 
-# ensure prod requirements installed and up to date
-prodenv: requirements-prod
+_install env:
     #!/usr/bin/env bash
     set -euo pipefail
 
     # exit if .txt file has not changed since we installed them (-nt == "newer than', but we negate with || to avoid error exit code)
-    test requirements.prod.txt -nt $VIRTUAL_ENV/.prod || exit 0
+    test requirements.{{ env }}.txt -nt $VIRTUAL_ENV/.{{ env }} || exit 0
 
-    $PIP install -r requirements.prod.txt
-    touch $VIRTUAL_ENV/.prod
+    $PIP install -r requirements.{{ env }}.txt
+    touch $VIRTUAL_ENV/.{{ env }}
+
+
+# ensure prod requirements installed and up to date
+prodenv: requirements-prod (_install 'prod')
 
 
 # && dependencies are run after the recipe has run. Needs just>=0.9.9. This is
 # a killer feature over Makefiles.
 #
 # ensure dev requirements installed and up to date
-devenv: prodenv requirements-dev && install-precommit
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    # exit if .txt file has not changed since we installed them (-nt == "newer than', but we negate with || to avoid error exit code)
-    test requirements.dev.txt -nt $VIRTUAL_ENV/.dev || exit 0
-
-    $PIP install -r requirements.dev.txt
-    touch $VIRTUAL_ENV/.dev
+devenv: prodenv requirements-dev (_install 'dev') && install-precommit
 
 
 # ensure precommit is installed
