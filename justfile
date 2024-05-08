@@ -41,13 +41,11 @@ _compile src dst *args: virtualenv
 
 
 # update requirements.prod.txt if requirements.prod.in has changed
-requirements-prod *args:
-    "{{ just_executable() }}" _compile requirements.prod.in requirements.prod.txt {{ args }}
+requirements-prod *args: (_compile 'requirements.prod.in' 'requirements.prod.txt' args)
 
 
 # update requirements.dev.txt if requirements.dev.in has changed
-requirements-dev *args: requirements-prod
-    "{{ just_executable() }}" _compile requirements.dev.in requirements.dev.txt {{ args }}
+requirements-dev *args: requirements-prod (_compile 'requirements.dev.in' 'requirements.dev.txt' args)
 
 
 # ensure prod requirements installed and up to date
