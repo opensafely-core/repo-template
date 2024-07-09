@@ -29,6 +29,8 @@ exclude = [
   "htmlcov",
   "venv",
 ]
+
+[tool.ruff.lint]
 extend-select = [
   "A",  # flake8-builtins
   "I",  # isort
@@ -42,5 +44,5 @@ extend-ignore = [
   "E731",
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 lines-after-imports = 2
