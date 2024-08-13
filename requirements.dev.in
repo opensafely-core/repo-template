@@ -9,5 +9,5 @@ coverage
 pip-tools
 pre-commit
 pytest
-pyyaml==6.0.1
+pyyaml
 ruff
