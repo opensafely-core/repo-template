@@ -109,7 +109,7 @@ check: black ruff
 # fix formatting and import sort ordering
 fix: devenv
     $BIN/black .
-    $BIN/ruff --fix .
+    $BIN/ruff check --fix .
 
 
 # Run the dev project
