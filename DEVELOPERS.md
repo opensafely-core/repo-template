@@ -4,17 +4,15 @@
 
 ### just
 
-```sh
-# macOS
-brew install just
+Follow installation instructions from the [Just Programmer's Manual](https://just.systems/man/en/chapter_4.html) for your OS.
 
-# Linux
-# Install from https://github.com/casey/just/releases
-
-# Add completion for your shell. E.g. for bash:
+Add completion for your shell. E.g. for bash:
+```
 source <(just --completions bash)
+```
 
-# Show all available commands
+Show all available commands
+```
 just #  shortcut for just --list
 ```
 
