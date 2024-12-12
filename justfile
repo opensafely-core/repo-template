@@ -89,8 +89,8 @@ upgrade env package="": virtualenv
     FORCE=true "{{ just_executable() }}" requirements-{{ env }} $opts
 
 
-# Updgrade all dev and prod dependencies.
-# This is the default input command to update-depndencies action
+# Upgrade all dev and prod dependencies.
+# This is the default input command to update-dependencies action
 # https://github.com/opensafely-core/update-dependencies-action
 update-dependencies:
     just upgrade prod
