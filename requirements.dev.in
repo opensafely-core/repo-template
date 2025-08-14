@@ -10,6 +10,3 @@ pre-commit
 pytest
 pyyaml
 ruff
-# Pin pip due to incompatibility of later releases with pip-tools
-# https://github.com/jazzband/pip-tools/issues/2176
-pip==25.0.1
