@@ -91,15 +91,23 @@ install-precommit:
     test -f $BASE_DIR/.git/hooks/pre-commit || $BIN/pre-commit install
 
 
-# upgrade dev or prod dependencies (specify package to upgrade single package, all by default)
-upgrade env package="": virtualenv
-    #!/usr/bin/env bash
-    set -euo pipefail
+# upgrade dependencies (specify package to upgrade single package, all by default)
+@upgrade package="" package-date="": virtualenv
+    if [ -z "{{ package }}" ]; then \
+        just _upgrade-all; \
+    else \
+        just _upgrade-package {{ package }} "{{ package-date }}"; \
+    fi
 
-    opts="--upgrade"
-    test -z "{{ package }}" || opts="--upgrade-package {{ package }}"
-    FORCE=true "{{ just_executable() }}" requirements-{{ env }} $opts
+@_upgrade-all:
+    just _uv "lock" "--upgrade"
 
+@_upgrade-package package package-date="":
+    if [ -z "{{ package-date }}" ]; then \
+        just _uv "lock" "--upgrade-package {{ package }}"; \
+    else \
+        just _uv "lock" "--upgrade-package {{ package }} --exclude-newer-package {{ package }}=$(date -d "{{ package-date }}" +"%Y-%m-%dT%H:%M:%SZ")"; \
+    fi
 
 # Upgrade all dev and prod dependencies.
 # This is the default input command to update-dependencies action
