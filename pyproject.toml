@@ -1,3 +1,11 @@
+[project]
+name = "repo-template"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
 [tool.coverage.run]
 branch = true
 dynamic_context = "test_function"
