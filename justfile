@@ -37,7 +37,34 @@ _uv +args: virtualenv
     #!/usr/bin/env bash
     set -euo pipefail
 
-    uv {{ args }} || exit 1
+    # Set global timestamp cutoff
+    if [ -n "${UV_EXCLUDE_NEWER:-}" ]; then
+        GLOBAL_TIMESTAMP=$UV_EXCLUDE_NEWER
+        unset UV_EXCLUDE_NEWER # this will be set via flag
+    elif [ -z "$(grep "exclude-newer =" uv.lock)" ]; then
+        echo 'No global timestamp found in the lockfile and UV_EXCLUDE_NEWER is not provided.'
+        exit 1
+    else
+        GLOBAL_TIMESTAMP=$(grep -n "exclude-newer = " uv.lock | cut -d'=' -f2 | cut -d'"' -f2)
+    fi
+    opts="--exclude-newer $GLOBAL_TIMESTAMP"
+
+    # Get package-specific timestamps from lockfile and set them
+    if [ -n "$(grep "options.exclude-newer-package" uv.lock)" ]; then
+        touch -d "$GLOBAL_TIMESTAMP" $VIRTUAL_ENV/.target
+        while IFS= read -r line; do
+            package="$(echo "${line%%=*}" | xargs)"
+            date="$(echo "${line#*=}" | xargs)"
+            touch -d "$date" $VIRTUAL_ENV/.package
+            if [ $VIRTUAL_ENV/.package -nt $VIRTUAL_ENV/.target ]; then
+                opts="$opts --exclude-newer-package $package=$date"
+            else
+                echo "The cutoff for $package ($date) is older than the global cutoff and will no longer be specified."
+            fi
+        done < <(sed -n '/options.exclude-newer-package/,/^$/p' uv.lock | grep '=')
+    fi
+
+    uv  {{ args }} $opts || exit 1
 
 
 # update uv.lock if dependencies in pyproject.toml have changed
