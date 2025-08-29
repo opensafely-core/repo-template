@@ -33,7 +33,7 @@ virtualenv *args:
 
 
 # Wrap `uv` commands that alter the lockfile
-_uv +args: virtualenv
+_uv command +args: virtualenv
     #!/usr/bin/env bash
     set -euo pipefail
 
@@ -64,7 +64,7 @@ _uv +args: virtualenv
         done < <(sed -n '/options.exclude-newer-package/,/^$/p' uv.lock | grep '=')
     fi
 
-    uv  {{ args }} $opts || exit 1
+    uv {{ command }} $opts {{ args }} || exit 1
 
 
 # update uv.lock if dependencies in pyproject.toml have changed
@@ -72,14 +72,14 @@ requirements *args: (_uv "lock" args)
 
 
 # ensure prod requirements installed and up to date
-prodenv: requirements (_uv "sync --frozen --no-dev")
+prodenv: requirements (_uv "sync" "--frozen --no-dev")
 
 
 # && dependencies are run after the recipe has run. Needs just>=0.9.9. This is
 # a killer feature over Makefiles.
 #
 # ensure dev requirements installed and up to date
-devenv: requirements (_uv "sync --frozen") && install-precommit
+devenv: requirements (_uv "sync" "--frozen") && install-precommit
 
 
 # ensure precommit is installed
