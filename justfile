@@ -24,11 +24,12 @@ virtualenv:
     # allow users to specify python version in .env
     PYTHON_VERSION=${PYTHON_VERSION:-$DEFAULT_PYTHON}
 
-    # create venv and upgrade pip
-    test -d $VIRTUAL_ENV || { $PYTHON_VERSION -m venv $VIRTUAL_ENV && $PIP install --upgrade pip; }
+    # Create venv; installs `uv`-managed python if python interpreter not found
+    test -d $VIRTUAL_ENV || uv venv --python $PYTHON_VERSION
 
-    # ensure we have pip-tools so we can run pip-compile
-    test -e $BIN/pip-compile || $PIP install pip-tools
+    # Block accidental usage of system pip by placing an executable at .venv/bin/pip
+    echo 'echo "pip is not installed: use uv pip for a pip-like interface."' > .venv/bin/pip
+    chmod +x .venv/bin/pip
 
 
 _compile src dst *args: virtualenv
