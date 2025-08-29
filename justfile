@@ -38,15 +38,29 @@ _uv command +args: virtualenv
     set -euo pipefail
 
     # Set global timestamp cutoff
-    if [ -n "${UV_EXCLUDE_NEWER:-}" ]; then
-        GLOBAL_TIMESTAMP=$UV_EXCLUDE_NEWER
-        unset UV_EXCLUDE_NEWER # this will be set via flag
-    elif [ -z "$(grep "exclude-newer =" uv.lock)" ]; then
+    if [ -n "$(grep "exclude-newer =" uv.lock)" ]; then
+        LOCKFILE_TIMESTAMP=$(grep -n "exclude-newer =" uv.lock | cut -d'=' -f2 | cut -d'"' -f2)
+    fi
+
+    if [ -z "${UV_EXCLUDE_NEWER:-}" ] && [ -z "${LOCKFILE_TIMESTAMP:-}" ]; then
         echo 'No global timestamp found in the lockfile and UV_EXCLUDE_NEWER is not provided.'
         exit 1
+    elif [ -n "${UV_EXCLUDE_NEWER:-}" ] && [ -z "${LOCKFILE_TIMESTAMP:-}" ]; then
+        GLOBAL_TIMESTAMP=$UV_EXCLUDE_NEWER
+        unset UV_EXCLUDE_NEWER # this will be set via flag
+    elif [ -z "${UV_EXCLUDE_NEWER:-}" ] && [ -n "${LOCKFILE_TIMESTAMP:-}" ]; then
+        GLOBAL_TIMESTAMP=$LOCKFILE_TIMESTAMP
     else
-        GLOBAL_TIMESTAMP=$(grep -n "exclude-newer = " uv.lock | cut -d'=' -f2 | cut -d'"' -f2)
+        touch -d "$UV_EXCLUDE_NEWER" $VIRTUAL_ENV/.target
+        touch -d "$LOCKFILE_TIMESTAMP" $VIRTUAL_ENV/.existing
+        if [ $VIRTUAL_ENV/.existing -nt $VIRTUAL_ENV/.target ]; then
+            echo "The lockfile timestamp is newer than the target cutoff. Using the lockfile timestamp."
+            GLOBAL_TIMESTAMP=$LOCKFILE_TIMESTAMP
+        else
+            GLOBAL_TIMESTAMP=$UV_EXCLUDE_NEWER
+        fi
     fi
+
     opts="--exclude-newer $GLOBAL_TIMESTAMP"
 
     # Get package-specific timestamps from lockfile and set them
