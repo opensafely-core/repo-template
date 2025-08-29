@@ -32,21 +32,15 @@ virtualenv *args:
     chmod +x .venv/bin/pip
 
 
-_compile src dst *args: virtualenv
+# Wrap `uv` commands that alter the lockfile
+_uv command +args: virtualenv
     #!/usr/bin/env bash
     set -euo pipefail
 
-    # exit if src file is older than dst file (-nt = 'newer than', but we negate with || to avoid error exit code)
-    test "${FORCE:-}" = "true" -o {{ src }} -nt {{ dst }} || exit 0
-    $BIN/pip-compile --allow-unsafe --generate-hashes --output-file={{ dst }} {{ src }} {{ args }}
+    uv {{ command }} {{ args }} || exit 1
 
-
-# update requirements.prod.txt if requirements.prod.in has changed
-requirements-prod *args: (_compile 'requirements.prod.in' 'requirements.prod.txt' args)
-
-
-# update requirements.dev.txt if requirements.dev.in has changed
-requirements-dev *args: requirements-prod (_compile 'requirements.dev.in' 'requirements.dev.txt' args)
+# update uv.lock if dependencies in pyproject.toml have changed
+requirements *args: (_uv "lock" args)
 
 
 _install env:
