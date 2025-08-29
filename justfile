@@ -44,26 +44,15 @@ _uv +args: virtualenv
 requirements *args: (_uv "lock" args)
 
 
-_install env:
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    # exit if .txt file has not changed since we installed them (-nt == "newer than', but we negate with || to avoid error exit code)
-    test requirements.{{ env }}.txt -nt $VIRTUAL_ENV/.{{ env }} || exit 0
-
-    $PIP install -r requirements.{{ env }}.txt
-    touch $VIRTUAL_ENV/.{{ env }}
-
-
 # ensure prod requirements installed and up to date
-prodenv: requirements-prod (_install 'prod')
+prodenv: requirements (_uv "sync --frozen --no-dev")
 
 
 # && dependencies are run after the recipe has run. Needs just>=0.9.9. This is
 # a killer feature over Makefiles.
 #
 # ensure dev requirements installed and up to date
-devenv: prodenv requirements-dev (_install 'dev') && install-precommit
+devenv: requirements (_uv "sync --frozen") && install-precommit
 
 
 # ensure precommit is installed
