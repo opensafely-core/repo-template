@@ -114,9 +114,12 @@ install-precommit:
 # Upgrade all dev and prod dependencies.
 # This is the default input command to update-dependencies action
 # https://github.com/bennettoxford/update-dependencies-action
-update-dependencies:
-    just upgrade prod
-    just upgrade dev
+@update-dependencies  date="":
+    if [ -n "{{ date }}" ]; then \
+        UV_EXCLUDE_NEWER=${UV_EXCLUDE_NEWER:-$(date -d "{{ date }}" +"%Y-%m-%dT%H:%M:%SZ")} just _upgrade-all; \
+    else \
+        just _upgrade-all; \
+    fi
 
 # *args is variadic, 0 or more. This allows us to do `just test -k match`, for example.
 # Run the tests
