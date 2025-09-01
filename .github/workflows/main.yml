@@ -10,8 +10,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Install uv # v6.6.1
+        uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6
       - uses: "opensafely-core/setup-action@v1"
         with:
+          cache: null
           python-version: "3.11"
           install-just: true
       - name: Check formatting, linting and import sorting
@@ -22,8 +25,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Install uv # v6.6.1
+        uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6
       - uses: "opensafely-core/setup-action@v1"
         with:
+          cache: null
           python-version: "3.11"
           install-just: true
       - name: Run tests
