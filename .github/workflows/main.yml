@@ -10,8 +10,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      - name: Install uv # v6.6.1
+        uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6
       - uses: "opensafely-core/setup-action@v1"
         with:
+          cache: null # uv projects do not use the cache
           python-version: "3.11"
           install-uv: true
           install-just: true
@@ -24,8 +27,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      - name: Install uv # v6.6.1
+        uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6
       - uses: "opensafely-core/setup-action@v1"
         with:
+          cache: null
           python-version: "3.11"
           install-uv: true
           install-just: true
