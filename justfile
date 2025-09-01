@@ -111,6 +111,8 @@ install-precommit:
 @upgrade package="" package-date="": virtualenv
     if [ -z "{{ package }}" ]; then \
         just _upgrade-all; \
+    elif [ -n "${UV_EXCLUDE_NEWER:-}" ] && [ -n "{{ package }}" ]; then \
+        echo "Global timestamp set via UV_EXCLUDE_NEWER for single package upgrade; exiting since intention is unclear." && exit 1; \
     else \
         just _upgrade-package {{ package }} "{{ package-date }}"; \
     fi
@@ -129,8 +131,10 @@ install-precommit:
 # This is the default input command to update-dependencies action
 # https://github.com/bennettoxford/update-dependencies-action
 @update-dependencies  date="":
-    if [ -n "{{ date }}" ]; then \
-        UV_EXCLUDE_NEWER=${UV_EXCLUDE_NEWER:-$(date -d "{{ date }}" +"%Y-%m-%dT%H:%M:%SZ")} just _upgrade-all; \
+    if [ -n "${UV_EXCLUDE_NEWER:-}" ] && [ -n "{{ date }}" ]; then \
+        echo "Global timestamp set via UV_EXCLUDE_NEWER in addition to date argument; exiting since intention is unclear." && exit 1; \
+    elif [ -z "${UV_EXCLUDE_NEWER:-}" ] && [ -n "{{ date }}" ]; then \
+        UV_EXCLUDE_NEWER=$(date -d "{{ date }}" +"%Y-%m-%dT%H:%M:%SZ") just _upgrade-all; \
     else \
         just _upgrade-all; \
     fi
