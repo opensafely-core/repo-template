@@ -159,8 +159,9 @@ format *args=".": devenv
 lint *args=".": devenv
     $BIN/ruff check {{ args }}
 
-# run the various dev checks but does not change any files
-check: format lint
+# Run the various dev checks but does not change any files
+# The lockfile check should occur before `devenv` gets run
+check: (_uv "lock" "--check") format lint
 
 
 # fix formatting and import sort ordering
