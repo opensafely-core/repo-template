@@ -12,7 +12,8 @@ New repo checklist:
     - hadolint pre-commit hook from `.pre-commit-config.yaml`
     - `lint-dockerfile` action from `.github/workflows/main.yml`
   - If so, and if it's a python repo using `uv` for managing dependencies,
-    add the following to your Dockerfile after python installation:
+    add the following to your Dockerfile after python installation
+    (see the `uv` docker guidelines[^1] for details):
     ```dockerfile
     COPY --from=ghcr.io/astral-sh/uv:<commit sha of latest release> /uv /usr/local/bin/uv
     ENV UV_LINK_MODE=copy \
@@ -47,3 +48,5 @@ New repo checklist:
 ## Developer docs
 
 Please see the [additional information](DEVELOPERS.md).
+
+[^1]: https://docs.astral.sh/uv/guides/integration/docker/
