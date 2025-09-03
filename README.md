@@ -7,7 +7,7 @@ Put your project description here.
 New repo checklist:
 - [ ] Does the repo require a Dockerfile?
   - If not, delete:
-    - Dockerfile -
+    - Dockerfile
     - .dockerignore
     - hadolint pre-commit hook from `.pre-commit-config.yaml`
     - `lint-dockerfile` action from `.github/workflows/main.yml`
