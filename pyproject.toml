@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+]
 
 [tool.coverage.run]
 branch = true
@@ -54,3 +55,13 @@ extend-ignore = [
 
 [tool.ruff.lint.isort]
 lines-after-imports = 2
+
+[dependency-groups]
+dev = [
+    "coverage>=7.10.6",
+    "pip-tools>=7.5.0",
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.1",
+    "pyyaml>=6.0.2",
+    "ruff>=0.12.11",
+]
