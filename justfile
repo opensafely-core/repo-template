@@ -42,7 +42,8 @@ _uv command *args: virtualenv
         unset UV_EXCLUDE_NEWER
         echo "UV_EXCLUDE_NEWER environment variable ignored."
     fi
-    GLOBAL_TIMESTAMP=$(grep "exclude-newer =" uv.lock | cut -d'=' -f2 | cut -d'"' -f2 || echo "")
+    LOCKFILE_TIMESTAMP=$(grep "exclude-newer =" uv.lock | cut -d'=' -f2 | cut -d'"' -f2 || echo "")
+    GLOBAL_TIMESTAMP="${TARGET_TIMESTAMP:-$LOCKFILE_TIMESTAMP}"
     if [ -z ${GLOBAL_TIMESTAMP:-} ]; then
         echo 'No global timestamp found in the lockfile. Try setting a global timestamp via `just update-dependencies`.'
         exit 1
@@ -110,12 +111,24 @@ upgrade package="" package-date="": virtualenv
         just _uv "lock" "--upgrade-package {{ package }} --exclude-newer-package {{ package }}=$PACKAGE_TIMESTAMP"
     fi
 
-# Upgrade all dev and prod dependencies.
+# Upgrade all dev and prod dependencies; e.g. `just update-dependencies "7 days ago"`
 # This is the default input command to update-dependencies action
 # https://github.com/bennettoxford/update-dependencies-action
-update-dependencies:
-    just upgrade prod
-    just upgrade dev
+update-dependencies date:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    export TARGET_TIMESTAMP=$(date --date "{{ date }}" +'%Y-%m-%dT%H:%M:%SZ')
+    if [ -n "$(grep "exclude-newer =" uv.lock)" ]; then
+        LOCKFILE_TIMESTAMP=$(grep "exclude-newer =" uv.lock | cut -d'=' -f2 | cut -d'"' -f2)
+        touch -d "$TARGET_TIMESTAMP" $VIRTUAL_ENV/.target
+        touch -d "$LOCKFILE_TIMESTAMP" $VIRTUAL_ENV/.existing
+        if [ $VIRTUAL_ENV/.existing -nt $VIRTUAL_ENV/.target ]; then
+            echo "Ignoring date argument ($TARGET_TIMESTAMP) since it is earlier than the lockfile timestamp ($LOCKFILE_TIMESTAMP)."
+            unset TARGET_TIMESTAMP
+        fi
+    fi
+    just upgrade
 
 # *args is variadic, 0 or more. This allows us to do `just test -k match`, for example.
 # Run the tests
