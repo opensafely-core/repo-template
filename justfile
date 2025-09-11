@@ -6,22 +6,22 @@ export PIP := BIN + if os_family() == "unix" { "/python -m pip" } else { "/pytho
 export DEFAULT_PYTHON := if os_family() == "unix" { `cat .python-version` } else { "python" }
 
 
-# list available commands
+# List available commands
 default:
     @"{{ just_executable() }}" --list
 
 
-# clean up temporary files
+# Clean up temporary files
 clean:
     rm -rf .venv
 
 
-# ensure valid virtualenv
+# Ensure valid virtualenv
 virtualenv:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    # allow users to specify python version in .env
+    # Allow users to specify python version in .env
     PYTHON_VERSION=${PYTHON_VERSION:-$DEFAULT_PYTHON}
 
     # Create venv; installs `uv`-managed python if python interpreter not found
@@ -82,12 +82,12 @@ prodenv: requirements
 # && dependencies are run after the recipe has run. Needs just>=0.9.9. This is
 # a killer feature over Makefiles.
 #
-# ensure dev requirements installed and up to date
+# Ensure dev requirements installed and up to date
 devenv: requirements && install-precommit
     uv sync --frozen
 
 
-# ensure precommit is installed
+# Ensure precommit is installed
 install-precommit:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -164,7 +164,7 @@ lint *args=".": devenv
 check: (_uv "lock" "--check") format lint
 
 
-# fix formatting and import sort ordering
+# Fix formatting and import sort ordering
 fix: devenv
     $BIN/ruff check --fix .
     $BIN/ruff format .
@@ -187,7 +187,7 @@ assets-install:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    # exit if lock file has not changed since we installed them. -nt == "newer than",
+    # Exit if lock file has not changed since we installed them. -nt == "newer than",
     # but we negate with || to avoid error exit code
     test package-lock.json -nt node_modules/.written || exit 0
 
@@ -200,10 +200,10 @@ assets-build:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    # find files which are newer than dist/.written in the src directory. grep
+    # Find files which are newer than dist/.written in the src directory. grep
     # will exit with 1 if there are no files in the result.  We negate this
     # with || to avoid error exit code
-    # we wrap the find in an if in case dist/.written is missing so we don't
+    # We wrap the find in an if in case dist/.written is missing so we don't
     # trigger a failure prematurely
     if test -f assets/dist/.written; then
         find assets/src -type f -newer assets/dist/.written | grep -q . || exit 0
