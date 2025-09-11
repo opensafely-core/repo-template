@@ -95,6 +95,22 @@ install-precommit:
     BASE_DIR=$(git rev-parse --show-toplevel)
     test -f $BASE_DIR/.git/hooks/pre-commit || $BIN/pre-commit install
 
+# Format a relative date into YYYY-MM-DDTHH:MM:SSZ format, or return the input unchanged if it is already in YYYY-MM-DD(THH:MM:SSZ) format
+_format-date date:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    # Input format for relative dates depends on BSD vs GNU `date` command. BSD is the default for MacOS.
+    if date -v1d >/dev/null 2>&1; then
+        flag="-v" # BSD - see `man date` for usage; example '-7d'
+    else
+        flag="--date" # GNU - see `date --help` for usage; example '7 days ago'
+    fi
+    if [[ "{{ date }}" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}(T[0-9]{2}:[0-9]{2}:[0-9]{2}Z)?$ ]]; then
+        echo "{{ date }}"
+    else
+        eval "date $flag '{{ date }}' +'%Y-%m-%dT%H:%M:%SZ'"
+    fi
 
 # Upgrade dependencies (specify package to upgrade single package, all by default)
 # Use `update-dependencies` instead if you want to set a new global timestamp cutoff
@@ -107,18 +123,18 @@ upgrade package="" package-date="": virtualenv
     elif [ -z "{{ package-date }}" ]; then
         just _uv "lock" "--upgrade-package {{ package }}";
     else
-        PACKAGE_TIMESTAMP=$(date --date "{{ package-date }}" +'%Y-%m-%dT%H:%M:%SZ')
+        PACKAGE_TIMESTAMP=$(just _format-date "{{ package-date }}")
         just _uv "lock" "--upgrade-package {{ package }} --exclude-newer-package {{ package }}=$PACKAGE_TIMESTAMP"
     fi
 
-# Upgrade all dev and prod dependencies; e.g. `just update-dependencies "7 days ago"`
+# Upgrade all dev and prod dependencies; see `_format-date` for date argument format
 # This is the default input command to update-dependencies action
 # https://github.com/bennettoxford/update-dependencies-action
 update-dependencies date:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    export TARGET_TIMESTAMP=$(date --date "{{ date }}" +'%Y-%m-%dT%H:%M:%SZ')
+    export TARGET_TIMESTAMP=$(just _format-date "{{ date }}")
     if [ -n "$(grep "exclude-newer =" uv.lock)" ]; then
         LOCKFILE_TIMESTAMP=$(grep "exclude-newer =" uv.lock | cut -d'=' -f2 | cut -d'"' -f2)
         touch -d "$TARGET_TIMESTAMP" $VIRTUAL_ENV/.target
