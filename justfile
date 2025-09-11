@@ -95,15 +95,20 @@ install-precommit:
     test -f $BASE_DIR/.git/hooks/pre-commit || $BIN/pre-commit install
 
 
-# upgrade dev or prod dependencies (specify package to upgrade single package, all by default)
-upgrade env package="": virtualenv
+# Upgrade dependencies (specify package to upgrade single package, all by default)
+# Use `update-dependencies` instead if you want to set a new global timestamp cutoff
+upgrade package="" package-date="": virtualenv
     #!/usr/bin/env bash
     set -euo pipefail
 
-    opts="--upgrade"
-    test -z "{{ package }}" || opts="--upgrade-package {{ package }}"
-    FORCE=true "{{ just_executable() }}" requirements-{{ env }} $opts
-
+    if [ -z "{{ package }}" ]; then
+        just _uv "lock" "--upgrade";
+    elif [ -z "{{ package-date }}" ]; then
+        just _uv "lock" "--upgrade-package {{ package }}";
+    else
+        PACKAGE_TIMESTAMP=$(date --date "{{ package-date }}" +'%Y-%m-%dT%H:%M:%SZ')
+        just _uv "lock" "--upgrade-package {{ package }} --exclude-newer-package {{ package }}=$PACKAGE_TIMESTAMP"
+    fi
 
 # Upgrade all dev and prod dependencies.
 # This is the default input command to update-dependencies action
