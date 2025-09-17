@@ -7,10 +7,13 @@ Put your project description here.
 New repo checklist:
 - [ ] Does the repo require a Dockerfile?
   If not, delete:
-  - Dockerfile -
+  - the `docker/` directory
   - .dockerignore
   - hadolint pre-commit hook from `.pre-commit-config.yaml`
   - `lint-dockerfile` action from `.github/workflows/main.yml`
+  If so:
+  - run `grep -iR new-project docker` to find places where you need to insert information about your project
+  - update the files in the `docker/` directory as needed
 - [ ] Is this a Django project?
   If so, you probably need to add the following per-file ignores to `.flake8`
   ```
