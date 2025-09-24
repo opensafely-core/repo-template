@@ -11,6 +11,17 @@ default:
     @"{{ just_executable() }}" --list
 
 
+# create a valid .env if none exists
+_dotenv:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    if [[ ! -f .env ]]; then
+      echo "No '.env' file found; creating a default '.env' from 'dotenv-sample'"
+      cp dotenv-sample .env
+    fi
+
+
 # Clean up temporary files
 clean:
     rm -rf .venv
