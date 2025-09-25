@@ -56,6 +56,9 @@ extend-ignore = [
 [tool.ruff.lint.isort]
 lines-after-imports = 2
 
+[tool.uv]
+exclude-newer = "2025-09-18T17:41:53Z"
+
 [dependency-groups]
 dev = [
     "coverage>=7.10.6",

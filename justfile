@@ -43,59 +43,33 @@ virtualenv:
     chmod +x .venv/bin/pip
 
 
-# Wrap `uv` commands that alter the lockfile
-_uv command *args: virtualenv
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    # Set global timestamp cutoff
-    if [ -n "${UV_EXCLUDE_NEWER:-}" ]; then
-        unset UV_EXCLUDE_NEWER
-        echo "UV_EXCLUDE_NEWER environment variable ignored."
-    fi
-    LOCKFILE_TIMESTAMP=$(grep "exclude-newer =" uv.lock | cut -d'=' -f2 | cut -d'"' -f2 || echo "")
-    GLOBAL_TIMESTAMP="${TARGET_TIMESTAMP:-$LOCKFILE_TIMESTAMP}"
-    if [ -z ${GLOBAL_TIMESTAMP:-} ]; then
-        echo 'No global timestamp found in the lockfile. Try setting a global timestamp via `just update-dependencies`.'
-        exit 1
-    fi
-    opts="--exclude-newer $GLOBAL_TIMESTAMP"
-
-    # Get package-specific timestamps from lockfile and set them
-    if [ -n "$(grep "options.exclude-newer-package" uv.lock)" ]; then
-        touch -d "$GLOBAL_TIMESTAMP" $VIRTUAL_ENV/.target
-        while IFS= read -r line; do
-            package="$(cut -d= -f1 <<< "$line" | xargs)"
-            date="$(cut -d= -f2 <<< "$line" | xargs)"
-            touch -d "$date" $VIRTUAL_ENV/.package
-            if [ $VIRTUAL_ENV/.package -nt $VIRTUAL_ENV/.target ]; then
-                opts="$opts --exclude-newer-package $package=$date"
-            else
-                echo "The cutoff for $package ($date) is older than the global cutoff and will no longer be specified."
-            fi
-        done < <(sed -n '/options.exclude-newer-package/,/^$/p' uv.lock | grep '=')
-    fi
-
-    uv {{ command }} $opts {{ args }}
-
-
 # Ensure `uv.lock` satisfies the constraints in `pyproject.toml` and update `uv.lock` if not
 # Does not automatically upgrade packages if existing versions meet constraints - see `upgrade` for that
 # Does not install the dependencies into the venv - use `prodenv` or `devenv` instead for that
-requirements *args: (_uv "lock" args)
+requirements *args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    uv lock {{ args }}
 
 
 # ensure prod requirements installed and up to date
-prodenv: requirements
-    uv sync --frozen --no-dev
+prodenv:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    uv sync --no-dev
 
 
 # && dependencies are run after the recipe has run. Needs just>=0.9.9. This is
 # a killer feature over Makefiles.
 #
 # Ensure dev requirements installed and up to date
-devenv: requirements && install-precommit
-    uv sync --frozen
+devenv: && install-precommit
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    uv sync
 
 
 # Ensure precommit is installed
@@ -125,34 +99,34 @@ _format-date date:
 
 # Upgrade dependencies (specify package to upgrade single package, all by default)
 # Use `update-dependencies` instead if you want to set a new global timestamp cutoff
-upgrade package="" package-date="": virtualenv
+# Package-specific timestamps should be set in pyproject.toml
+upgrade package="": virtualenv
     #!/usr/bin/env bash
     set -euo pipefail
 
     if [ -z "{{ package }}" ]; then
-        just _uv "lock" "--upgrade";
-    elif [ -z "{{ package-date }}" ]; then
-        just _uv "lock" "--upgrade-package {{ package }}";
+        uv "lock" "--upgrade";
     else
-        PACKAGE_TIMESTAMP=$(just _format-date "{{ package-date }}")
-        just _uv "lock" "--upgrade-package {{ package }} --exclude-newer-package {{ package }}=$PACKAGE_TIMESTAMP"
+        uv "lock" "--upgrade-package {{ package }}";
     fi
 
 # Upgrade all dev and prod dependencies; see `_format-date` for date argument format
 # This is the default input command to update-dependencies action
 # https://github.com/bennettoxford/update-dependencies-action
-update-dependencies date:
+update-dependencies date="7 days ago":
     #!/usr/bin/env bash
     set -euo pipefail
 
-    export TARGET_TIMESTAMP=$(just _format-date "{{ date }}")
+    export UV_EXCLUDE_NEWER=$(just _format-date "{{ date }}")
     if [ -n "$(grep "exclude-newer =" uv.lock)" ]; then
         LOCKFILE_TIMESTAMP=$(grep "exclude-newer =" uv.lock | cut -d'=' -f2 | cut -d'"' -f2)
-        touch -d "$TARGET_TIMESTAMP" $VIRTUAL_ENV/.target
+        touch -d "$UV_EXCLUDE_NEWER" $VIRTUAL_ENV/.target
         touch -d "$LOCKFILE_TIMESTAMP" $VIRTUAL_ENV/.existing
         if [ $VIRTUAL_ENV/.existing -nt $VIRTUAL_ENV/.target ]; then
-            echo "Ignoring date argument ($TARGET_TIMESTAMP) since it is earlier than the lockfile timestamp ($LOCKFILE_TIMESTAMP)."
-            unset TARGET_TIMESTAMP
+            echo "Ignoring date argument ($UV_EXCLUDE_NEWER) since it is earlier than the lockfile timestamp ($LOCKFILE_TIMESTAMP)."
+            unset UV_EXCLUDE_NEWER
+        else
+            sed -i "s|^exclude-newer = .*|exclude-newer = \"$UV_EXCLUDE_NEWER\"|" pyproject.toml
         fi
     fi
     just upgrade
@@ -172,7 +146,13 @@ lint *args=".": devenv
 
 # Run the various dev checks but does not change any files
 # The lockfile check should occur before `devenv` gets run
-check: (_uv "lock" "--check") format lint
+check: && format lint
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    # Make sure pyproject.toml and uv.lock are in sync in a fresh terminal
+    unset UV_EXCLUDE_NEWER
+    uv lock --check
 
 
 # Fix formatting and import sort ordering
