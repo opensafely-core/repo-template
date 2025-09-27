@@ -6,9 +6,19 @@
 **/htmlcov
 **/__pycache__
 **/*.pyc
-**/.python-version
 **/.env
 **/.venv
 **/venv
 **/.coverage
 **/*.egg-info/
+
+# Python files
+/tests
+
+# Tooling effluent
+/htmlcov
+/coverage
+
+# Local application state
+/node_modules
+/workdir
