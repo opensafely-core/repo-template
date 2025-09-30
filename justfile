@@ -1,9 +1,9 @@
-# list available commands
+# List available commands
 default:
     @"{{ just_executable() }}" --list
 
 
-# create a valid .env if none exists
+# Create a valid .env if none exists
 _dotenv:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -19,7 +19,7 @@ clean:
     rm -rf .venv
 
 
-# ensure prod requirements installed and up to date
+# Ensure prod requirements installed and up to date
 prodenv:
     uv sync --no-dev
 
@@ -27,12 +27,12 @@ prodenv:
 # && dependencies are run after the recipe has run. Needs just>=0.9.9. This is
 # a killer feature over Makefiles.
 #
-# ensure dev requirements installed and up to date
+# Ensure dev requirements installed and up to date
 devenv: && install-precommit
     uv sync --inexact
 
 
-# ensure precommit is installed
+# Ensure precommit is installed
 install-precommit:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -95,7 +95,7 @@ format *args=".":
 lint *args=".":
     uv run ruff check {{ args }}
 
-# run the various dev checks but does not change any files
+# Run the various dev checks but does not change any files
 check: && format lint # The lockfile should be checked before `uv run` is used
     #!/usr/bin/env bash
     set -euo pipefail
@@ -110,7 +110,7 @@ check: && format lint # The lockfile should be checked before `uv run` is used
     fi
 
 
-# fix formatting and import sort ordering
+# Fix formatting and import sort ordering
 fix:
     uv run ruff check --fix .
     uv run ruff format .
@@ -135,7 +135,7 @@ assets-install:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    # exit if lock file has not changed since we installed them. -nt == "newer than",
+    # Exit if lock file has not changed since we installed them. -nt == "newer than",
     # but we negate with || to avoid error exit code
     test package-lock.json -nt node_modules/.written || exit 0
 
@@ -148,10 +148,10 @@ assets-build:
     #!/usr/bin/env bash
     set -euo pipefail
 
-    # find files which are newer than dist/.written in the src directory. grep
+    # Find files which are newer than dist/.written in the src directory. grep
     # will exit with 1 if there are no files in the result.  We negate this
     # with || to avoid error exit code
-    # we wrap the find in an if in case dist/.written is missing so we don't
+    # We wrap the find in an if in case dist/.written is missing so we don't
     # trigger a failure prematurely
     if test -f assets/dist/.written; then
         find assets/src -type f -newer assets/dist/.written | grep -q . || exit 0
