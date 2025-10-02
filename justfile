@@ -19,7 +19,7 @@ clean:
     rm -rf .venv
 
 
-# Ensure prod requirements installed and up to date
+# Install production requirements into and remove extraneous packages from venv
 prodenv:
     uv sync --no-dev
 
@@ -27,7 +27,7 @@ prodenv:
 # && dependencies are run after the recipe has run. Needs just>=0.9.9. This is
 # a killer feature over Makefiles.
 #
-# Ensure dev requirements installed and up to date
+# Install dev requirements into venv without removing extraneous packages
 devenv: && install-precommit
     uv sync --inexact
 
