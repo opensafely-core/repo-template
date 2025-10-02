@@ -1,3 +1,12 @@
+[project]
+name = "repo-template"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+]
+
 [tool.coverage.run]
 branch = true
 dynamic_context = "test_function"
@@ -46,3 +55,19 @@ extend-ignore = [
 
 [tool.ruff.lint.isort]
 lines-after-imports = 2
+
+# Note: any `exclude-newer-package` timestamps should be removed if > 7 days old
+# See https://github.com/opensafely-core/repo-template/blob/main/DEVELOPERS.md for details
+[tool.uv]
+exclude-newer = "2025-09-23T00:00:00Z"
+exclude-newer-package = {}
+
+[dependency-groups]
+dev = [
+    "coverage>=7.10.6",
+    "pip-tools>=7.5.0",
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.1",
+    "pyyaml>=6.0.2",
+    "ruff>=0.12.11",
+]

@@ -13,7 +13,9 @@ jobs:
       - uses: "opensafely-core/setup-action@v1"
         with:
           python-version: "3.11"
+          install-uv: true
           install-just: true
+          cache: uv
       - name: Check formatting, linting and import sorting
         run: just check
 
@@ -25,7 +27,9 @@ jobs:
       - uses: "opensafely-core/setup-action@v1"
         with:
           python-version: "3.11"
+          install-uv: true
           install-just: true
+          cache: uv
       - name: Run tests
 #       env:  # Add environment variables required for tests
         run: |
@@ -37,4 +41,5 @@ jobs:
       - uses: actions/checkout@v5
       - uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf  # v3.1.0
         with:
+          dockerfile: docker/Dockerfile
           failure-threshold: error
