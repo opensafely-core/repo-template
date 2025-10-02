@@ -78,7 +78,8 @@ RUN --mount=type=cache,target=/var/cache/apt \
     /root/docker-apt-install.sh /tmp/dependencies-build.txt
 
 # Install everything in venv for isolation from system python libraries
-COPY --from=ghcr.io/astral-sh/uv:0.8 /uv /uvx /usr/local/bin/
+# Replace UV_VERSION with the version required (use a minor version e.g. 0.8 to use the latest patch release)
+COPY --from=ghcr.io/astral-sh/uv:UV_VERSION /uv /uvx /usr/local/bin/
 
 RUN uv venv
 
@@ -157,7 +158,8 @@ FROM new-project-base as new-project-dev
 # install development requirements
 # we want to additionally sync dev dependencies into the venv;
 # prod dependencies are already installed and we don't want to remove them.
-COPY --from=ghcr.io/astral-sh/uv:0.8 /uv /uvx /bin/
+# Replace UV_VERSION with the version required (use a minor version e.g. 0.8 to use the latest patch release)
+COPY --from=ghcr.io/astral-sh/uv:UV_VERSION /uv /uvx /bin/
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=.,target=/app \
     uv sync --frozen --no-install-project --directory /app
