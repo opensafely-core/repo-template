@@ -17,8 +17,9 @@ services:
         - GITREF
     # use dockers builitin PID daemon
     init: true
-    ports:
-      - "8000:8000"
+    # uncomment if port forwarding is needed
+    # ports:
+    #   - "8000:8000"
 
   # prod service. Used to build prod image and run/test it locally
   prod:
@@ -26,8 +27,6 @@ services:
     image: new-project # CHANGE ME!
     extends:
       service: base
-    volumes:
-      - ../workspaces:/workspaces
     # this compose file is only used for production-like testing - so we
     # don't worry about potentially leaking dummy env vars into actual prod
     env_file: ../.env
@@ -52,8 +51,8 @@ services:
     volumes:
       # Note: paths are relative to the *docker-compose* file
       - ..:/app
-      # provides a persistant inspectable cache for staticfiles
-      - ./staticfiles:/opt/staticfiles
+      # uncomment for Django apps using a persistant inspectable cache for staticfiles
+      # - ./staticfiles:/opt/staticfiles
 
   dev:
     extends:
@@ -65,7 +64,7 @@ services:
   test:
     extends:
       service: dev-base
-    # different default test env
+    # add .test.env file for different default test environment variables
     env_file:
       - ../.test.env
     command: pytest
