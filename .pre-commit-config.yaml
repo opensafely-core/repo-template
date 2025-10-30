@@ -29,7 +29,8 @@ repos:
     - id: check-yaml
     - id: detect-private-key
 
-  - repo: https://github.com/stratasan/hadolint-pre-commit
-    rev: cdefcb0
+  - repo: https://github.com/hadolint/hadolint
+    rev: 57e1618 # v2.14.0
     hooks:
-    - id: hadolint
+      - id: hadolint-docker
+        entry: ghcr.io/hadolint/hadolint hadolint docker/Dockerfile
