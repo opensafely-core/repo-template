@@ -28,7 +28,7 @@ prodenv:
 # a killer feature over Makefiles.
 #
 # Install dev requirements into venv without removing extraneous packages
-devenv: && install-precommit
+devenv: _dotenv && install-precommit
     uv sync --inexact
 
 
