@@ -45,6 +45,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
     /usr/lib/apt/apt-helper download-file 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf23c5a6cf475977595c89f51ba6932366a755776' /etc/apt/trusted.gpg.d/deadsnakes.asc
 
 # install any additional system dependencies
+# NOTE: ensure .python-version is not excluded in .dockerignore
 RUN --mount=type=cache,target=/var/cache/apt \
     --mount=type=bind,source=.,target=/app \
     /root/docker-apt-install.sh /app/docker/dependencies.txt "python$(cat /app/.python-version)"
