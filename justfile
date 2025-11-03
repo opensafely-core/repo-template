@@ -1,3 +1,5 @@
+set dotenv-load := true
+
 # List available commands
 default:
     @"{{ just_executable() }}" --list
@@ -11,6 +13,21 @@ _dotenv:
     if [[ ! -f .env ]]; then
       echo "No '.env' file found; creating a default '.env' from 'dotenv-sample'"
       cp dotenv-sample .env
+    fi
+
+
+# Check if a .env exists
+# Use this (rather than _dotenv or devenv) for recipes that require that a .env file exists.
+# just will not pick up environment variables from a .env that it's just created,
+# and there isn't an easy way to load those into the environment, so we just
+# prompt the user to run just devenv to set up their local environment properly.
+_checkenv:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    if [[ ! -f .env ]]; then
+        echo "No '.env' file found; run 'just devenv' to create one"
+        exit 1
     fi
 
 
