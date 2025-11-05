@@ -1,7 +1,7 @@
-/.coverage*
-/.pytest-cache/
-/.venv/
-/__pycache__
-/htmlcov
-/.env
-/.test.env
+.coverage*
+.pytest-cache/
+.venv/
+__pycache__
+htmlcov
+.env
+.test.env
