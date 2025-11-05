@@ -50,8 +50,9 @@ RUN --mount=type=cache,target=/var/cache/apt \
 # install any additional system dependencies
 # NOTE: ensure .python-version is not excluded in .dockerignore
 RUN --mount=type=cache,target=/var/cache/apt \
-    --mount=type=bind,source=.,target=/app \
-    /root/docker-apt-install.sh /app/docker/dependencies.txt "python$(cat /app/.python-version)"
+    --mount=type=bind,source=docker/dependencies.txt,target=/dependencies.txt \
+    --mount=type=bind,source=.python-version,target=/.python-version \
+    /root/docker-apt-install.sh /dependencies.txt "python$(cat /.python-version)"
 
 # uv env var documentation: https://docs.astral.sh/uv/reference/environment/
 # copy files rather than symlink since the cache and the target are on different filesystems
@@ -90,8 +91,8 @@ FROM base-python as builder
 
 # Install any system build dependencies
 RUN --mount=type=cache,target=/var/cache/apt \
-    --mount=type=bind,source=docker/dependencies-build.txt,target=/tmp/dependencies-build.txt \
-    /root/docker-apt-install.sh /tmp/dependencies-build.txt
+    --mount=type=bind,source=docker/dependencies-build.txt,target=/dependencies-build.txt \
+    /root/docker-apt-install.sh /dependencies-build.txt
 
 # Pull in the binaries from our pinned uv-cli stage
 COPY --from=uv-cli /uv /uvx /usr/local/bin/
@@ -103,8 +104,9 @@ RUN uv venv
 # between docker builds locally, for faster dev rebuild.
 # Setting --directory /app lets `uv` detect the pyproject.toml, uv.lock etc.
 RUN --mount=type=cache,target=/root/.cache \
-    --mount=type=bind,source=.,target=/app \
-    uv sync --frozen --no-dev --no-install-project --directory /app
+    --mount=type=bind,source=pyproject.toml,target=/root/pyproject.toml \
+    --mount=type=bind,source=uv.lock,target=/root/uv.lock \
+    uv sync --frozen --no-dev --no-install-project --directory /root
 
 ##################################################
 #
@@ -178,8 +180,9 @@ COPY --from=uv-cli /uv /uvx /bin/
 # we want to additionally sync dev dependencies into the venv;
 # prod dependencies are already installed and we don't want to remove them.
 RUN --mount=type=cache,target=/root/.cache \
-    --mount=type=bind,source=.,target=/app \
-    uv sync --frozen --no-install-project --directory /app
+    --mount=type=bind,source=pyproject.toml,target=/root/pyproject.toml \
+    --mount=type=bind,source=uv.lock,target=/root/uv.lock \
+    uv sync --frozen --no-install-project --directory /root
 
 # Override ENTRYPOINT rather than CMD so we can pass arbitrary commands to the entrypoint script
 ENTRYPOINT ["/app/docker/entrypoints/dev.sh"]
