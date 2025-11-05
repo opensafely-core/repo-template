@@ -12,9 +12,12 @@ services:
       args:
         # this makes the image work for later cache_from: usage
         - BUILDKIT_INLINE_CACHE=1
-        # env vars supplied by just
+        # dynamic env vars supplied by just
         - BUILD_DATE
         - GITREF
+        # env vars from .env
+        - UBUNTU_VERSION
+        - UV_VERSION
     # use dockers builitin PID daemon
     init: true
     # uncomment if port forwarding is needed
@@ -65,6 +68,6 @@ services:
     extends:
       service: dev-base
     # add .test.env file for different default test environment variables
-    env_file:
-      - ../.test.env
+    # env_file:
+    #   - ../.test.env
     command: pytest
