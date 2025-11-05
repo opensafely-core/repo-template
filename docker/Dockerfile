@@ -105,7 +105,7 @@ RUN uv venv
 
 # The cache mount means a) /root/.cache is not in the image, and b) it's preserved
 # between docker builds locally, for faster dev rebuild.
-# Setting --directory /app lets `uv` detect the pyproject.toml, uv.lock etc.
+# Setting --directory /root lets `uv` detect the pyproject.toml, uv.lock etc.
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=pyproject.toml,target=/root/pyproject.toml \
     --mount=type=bind,source=uv.lock,target=/root/uv.lock \
