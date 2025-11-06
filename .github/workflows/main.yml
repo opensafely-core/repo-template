@@ -6,9 +6,12 @@ permissions:
 on:
   push:
 
+
+# Note: we prefer to pin ubuntu versions explicitly rather than use
+# ubuntu:latest, as that changes underneath us.
 jobs:
   check:
-    runs-on: ubuntu:24.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v5
@@ -21,7 +24,7 @@ jobs:
         run: just check
 
   test:
-    runs-on: ubuntu:24.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v5
@@ -31,12 +34,12 @@ jobs:
           install-just: true
           cache: uv
       - name: Run tests
-#       env:  # Add environment variables required for tests
+        #env:  # Add environment variables required for tests
         run: |
           just test
 
   test-docker:
-    runs-on: ubuntu:24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
       - uses: "opensafely-core/setup-action@v1"
@@ -45,12 +48,12 @@ jobs:
           install-just: true
           cache: uv
       - name: Run docker tests
-#       env:  # Add environment variables required for tests
+        #env:  # Add environment variables required for tests
         run: |
           just docker/test
 
   lint-dockerfile:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
       - uses: hadolint/hadolint-action@2332a7b74a6de0dda2e2221d575162eba76ba5e5  # v3.3.0
