@@ -111,15 +111,13 @@ lint-actions:
     docker run --rm -v $(pwd):/repo:ro --workdir /repo rhysd/actionlint:1.7.8 -color
 
 # Run the various dev checks but does not change any files
-check: devenv
+check:
     #!/usr/bin/env bash
     set -euo pipefail
 
     failed=0
 
     check() {
-      # Display the command we're going to run, in bold and with the "$BIN/"
-      # prefix removed if present
       echo -e "\e[1m=> ${1}\e[0m"
       rc=0
       # Run it
