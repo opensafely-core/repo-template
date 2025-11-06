@@ -156,10 +156,11 @@ check-lockfile:
         exit $rc
     fi
 
-# Fix formatting and import sort ordering
+# Fix formatting, import sort ordering, and justfile
 fix:
     uv run ruff check --fix .
     uv run ruff format .
+    just --fmt --unstable
 
 # Run the dev project
 run: devenv
