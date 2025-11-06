@@ -41,6 +41,8 @@ run env="dev" *args="": _dotenv (build env)
 exec env="dev" *args="bash": _dotenv (build env)
     docker compose exec {{ env }} {{ args }}
 
+lint:
+    docker run --rm -i ghcr.io/hadolint/hadolint:v2.14.0-alpine < Dockerfile
 
 # stop and remove all project containers
 clean:
