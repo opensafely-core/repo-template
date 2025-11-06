@@ -4,7 +4,6 @@ set dotenv-load := true
 default:
     @"{{ just_executable() }}" --list
 
-
 # Create a valid .env if none exists
 _dotenv:
     #!/usr/bin/env bash
@@ -15,11 +14,11 @@ _dotenv:
       cp dotenv-sample .env
     fi
 
-
 # Check if a .env exists
 # Use this (rather than _dotenv or devenv) for recipes that require that a .env file exists.
 # just will not pick up environment variables from a .env that it's just created,
 # and there isn't an easy way to load those into the environment, so we just
+
 # prompt the user to run just devenv to set up their local environment properly.
 _checkenv:
     #!/usr/bin/env bash
@@ -30,24 +29,21 @@ _checkenv:
         exit 1
     fi
 
-
 # Clean up temporary files
 clean:
     rm -rf .venv
-
 
 # Install production requirements into and remove extraneous packages from venv
 prodenv:
     uv sync --no-dev
 
-
 # && dependencies are run after the recipe has run. Needs just>=0.9.9. This is
 # a killer feature over Makefiles.
 #
+
 # Install dev requirements into venv without removing extraneous packages
 devenv: _dotenv && install-precommit
     uv sync --inexact
-
 
 # Ensure precommit is installed
 install-precommit:
@@ -57,16 +53,13 @@ install-precommit:
     BASE_DIR=$(git rev-parse --show-toplevel)
     test -f $BASE_DIR/.git/hooks/pre-commit || uv run pre-commit install
 
-
 # Upgrade a single package to the latest version as of the cutoff in pyproject.toml
 upgrade-package package: && devenv
     uv lock --upgrade-package {{ package }}
 
-
 # Upgrade all packages to the latest versions as of the cutoff in pyproject.toml
 upgrade-all: && devenv
     uv lock --upgrade
-
 
 # Move the cutoff date in pyproject.toml to N days ago (default: 7) at midnight UTC
 bump-uv-cutoff days="7":
@@ -165,12 +158,10 @@ check-lockfile:
         exit $rc
     fi
 
-
 # Fix formatting and import sort ordering
 fix:
     uv run ruff check --fix .
     uv run ruff format .
-
 
 # Run the dev project
 run: devenv
@@ -178,13 +169,10 @@ run: devenv
     # E.g. uv run python manage.py runserver
     # Note: devenv prerequisite can be removed if using uv run
 
-
-
 # Remove built assets and collected static files
 assets-clean:
     rm -rf assets/dist
     rm -rf staticfiles
-
 
 # Install the Node.js dependencies
 assets-install:
@@ -197,7 +185,6 @@ assets-install:
 
     npm ci
     touch node_modules/.written
-
 
 # Build the Node.js assets
 assets-build:
@@ -216,8 +203,6 @@ assets-build:
     npm run build
     touch assets/dist/.written
 
-
 assets: assets-install assets-build
-
 
 assets-rebuild: assets-clean assets
