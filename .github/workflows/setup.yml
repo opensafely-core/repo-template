@@ -12,8 +12,9 @@ jobs:
       - name: Update README.md and remove action
         shell: bash
         run: |
-          export GITHUB_REPOSITORY_OWNER="$(echo $GITHUB_REPOSITORY | awk -F/ '{print $1}')"
-          export GITHUB_REPOSITORY_NAME="$(echo $GITHUB_REPOSITORY | awk -F/ '{print $2}')"
+          GITHUB_REPOSITORY_OWNER="$(echo "$GITHUB_REPOSITORY" | awk -F/ '{print $1}')"
+          GITHUB_REPOSITORY_NAME="$(echo "$GITHUB_REPOSITORY" | awk -F/ '{print $2}')"
+          export GITHUB_REPOSITORY_OWNER GITHUB_REPOSITORY_NAME
           envsubst < README.md > tmp && mv tmp README.md
           rm .github/workflows/setup.yml
           rm tests/test_repo.py
@@ -28,10 +29,10 @@ jobs:
           curl --silent -X GET \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.baptiste-preview+json" \
-            https://api.github.com/repos/$GITHUB_REPOSITORY \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY" \
             | jq --exit-status '.is_template == false' || is_template=true
           # output true/false so later actions can be skipped
-          echo "::set-output name=is_template::$is_template"
+          echo "is_template=$is_template" >> "$GITHUB_OUTPUT"
       - name: Commit changes
         # only actually commit the changes if this is not a template repo
         if: steps.is_template.outputs.is_template == 'false'
@@ -41,4 +42,4 @@ jobs:
           git config user.name "$(git log -1 --pretty=format:'%an')"
           git add .
           git commit --amend --no-edit
-          git push origin $GITHUB_REF --force
+          git push origin "$GITHUB_REF" --force

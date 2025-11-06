@@ -95,24 +95,27 @@ bump-uv-cutoff days="7":
     with open("pyproject.toml", "w") as f:
         tomlkit.dump(content, f)
 
-
 # This is the default input command to update-dependencies action
 # https://github.com/bennettoxford/update-dependencies-action
+
 # Bump the timestamp cutoff to midnight UTC 7 days ago and upgrade all dependencies
 update-dependencies: bump-uv-cutoff upgrade-all
 
 # *args is variadic, 0 or more. This allows us to do `just test -k match`, for example.
+
 # Run the tests
 test *args:
     uv run coverage run --module pytest {{ args }}
     uv run coverage report || uv run coverage html
-
 
 format *args:
     uv run ruff format --diff --quiet {{ args }} .
 
 lint *args:
     uv run ruff check {{ args }} .
+
+lint-actions:
+    docker run --rm -v $(pwd):/repo:ro --workdir /repo rhysd/actionlint:1.7.8 -color
 
 # Run the various dev checks but does not change any files
 check: devenv
@@ -139,6 +142,7 @@ check: devenv
     check "just check-lockfile"
     check "just format"
     check "just lint"
+    check "just lint-actions"
     check "just docker/lint"
 
     if [[ $failed > 0 ]]; then
