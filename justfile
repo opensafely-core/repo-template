@@ -134,7 +134,7 @@ check:
     check "just format"
     check "just lint"
     check "just lint-actions"
-    check "just docker/lint"
+    test -d docker/ && check "just docker/lint"
 
     if [[ $failed > 0 ]]; then
       echo -en "\e[1;31m"
