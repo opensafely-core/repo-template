@@ -108,11 +108,11 @@ test *args:
     uv run coverage report || uv run coverage html
 
 
-format *args=".":
-    uv run ruff format --check {{ args }}
+format *args:
+    uv run ruff format --diff --quiet {{ args }} .
 
-lint *args=".":
-    uv run ruff check {{ args }}
+lint *args:
+    uv run ruff check {{ args }} .
 
 # Run the various dev checks but does not change any files
 check: && format lint # The lockfile should be checked before `uv run` is used
