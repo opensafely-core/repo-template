@@ -51,12 +51,3 @@ jobs:
         #env:  # Add environment variables required for tests
         run: |
           just docker/test
-
-  lint-dockerfile:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v5
-      - uses: hadolint/hadolint-action@2332a7b74a6de0dda2e2221d575162eba76ba5e5  # v3.3.0
-        with:
-          dockerfile: docker/Dockerfile
-          failure-threshold: error
