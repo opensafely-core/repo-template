@@ -115,10 +115,43 @@ lint *args:
     uv run ruff check {{ args }} .
 
 # Run the various dev checks but does not change any files
-check: && format lint # The lockfile should be checked before `uv run` is used
+check: devenv
     #!/usr/bin/env bash
     set -euo pipefail
 
+    failed=0
+
+    check() {
+      # Display the command we're going to run, in bold and with the "$BIN/"
+      # prefix removed if present
+      echo -e "\e[1m=> ${1}\e[0m"
+      rc=0
+      # Run it
+      eval $1 || rc=$?
+      # Increment the counter on failure
+      if [[ $rc != 0 ]]; then
+        failed=$((failed + 1))
+        # Add spacing to separate the error output from the next check
+        echo -e "\n"
+      fi
+    }
+
+    check "just check-lockfile"
+    check "just format"
+    check "just lint"
+    check "just docker/lint"
+
+    if [[ $failed > 0 ]]; then
+      echo -en "\e[1;31m"
+      echo "   $failed checks failed"
+      echo -e "\e[0m"
+      exit 1
+    fi
+
+# validate uv.lock
+check-lockfile:
+    #!/usr/bin/env bash
+    set -euo pipefail
     # Make sure dates in pyproject.toml and uv.lock are in sync
     unset UV_EXCLUDE_NEWER
     rc=0
