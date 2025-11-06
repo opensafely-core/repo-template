@@ -24,14 +24,16 @@
 #
 # Create base image with python installed.
 # All Dockerfiles should start from the base-docker image
-#
+
+# These build args are required, and are used in FROM lines, so need to be
+# declared globally
+ARG UBUNTU_VERSION
+ARG UV_VERSION
+
 # DL3007 ignored because base-docker we specifically always want to build on
 # the latest base image, by design.
-#
 # hadolint ignore=DL3007
-
-# Replace UBUNTU_VERSION with the image version required
-FROM ghcr.io/opensafely-core/base-docker:UBUNTU_VERSION as base-python
+FROM ghcr.io/opensafely-core/base-action:${UBUNTU_VERSION} as base-python
 
 # we are going to use an apt cache on the host, so disable the default debian
 # docker clean up that deletes that cache on every apt install
@@ -40,15 +42,20 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean
 # use deadsnakes ppa to install a fully working base python installation
 # see: https://gist.github.com/tiran/2dec9e03c6f901814f6d1e8dad09528e
 # use space efficient utility from base image
-RUN --mount=type=cache,target=/var/cache/apt \
-    echo "deb https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy main" > /etc/apt/sources.list.d/deadsnakes-ppa.list && \
-    /usr/lib/apt/apt-helper download-file 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf23c5a6cf475977595c89f51ba6932366a755776' /etc/apt/trusted.gpg.d/deadsnakes.asc
+RUN --mount=type=cache,target=/var/cache/apt <<'EOF'
+UBUNTU_CODENAME=$(. /etc/os-release && echo "$VERSION_CODENAME")
+KEY_PATH=/usr/share/keyrings/deadsnakes.asc
+KEY_URL='https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xf23c5a6cf475977595c89f51ba6932366a755776'
+/usr/lib/apt/apt-helper download-file "$KEY_URL" "$KEY_PATH"
+echo "deb [signed-by=$KEY_PATH] https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu ${UBUNTU_CODENAME} main" > /etc/apt/sources.list.d/deadsnakes-ppa.list
+EOF
 
 # install any additional system dependencies
 # NOTE: ensure .python-version is not excluded in .dockerignore
 RUN --mount=type=cache,target=/var/cache/apt \
-    --mount=type=bind,source=.,target=/app \
-    /root/docker-apt-install.sh /app/docker/dependencies.txt "python$(cat /app/.python-version)"
+    --mount=type=bind,source=docker/dependencies.txt,target=/dependencies.txt \
+    --mount=type=bind,source=.python-version,target=/.python-version \
+    /root/docker-apt-install.sh /dependencies.txt "python$(cat /.python-version)"
 
 # uv env var documentation: https://docs.astral.sh/uv/reference/environment/
 # copy files rather than symlink since the cache and the target are on different filesystems
@@ -60,6 +67,18 @@ ENV UV_COMPILE_BYTECODE=1
 ENV UV_PYTHON_DOWNLOADS=never
 # set the directory for the venv
 ENV UV_PROJECT_ENVIRONMENT="/opt/venv"
+
+##################################################
+#
+# Reusable uv CLI layer
+#
+# This allows us to specify the version in one place, and also works around
+# a limitation that you cannot use build args directly in `COPY --from`.
+#
+# See: https://github.com/moby/buildkit/issues/2412 for more infor
+#
+#
+FROM ghcr.io/astral-sh/uv:${UV_VERSION} as uv-cli
 
 ##################################################
 #
@@ -75,21 +94,22 @@ FROM base-python as builder
 
 # Install any system build dependencies
 RUN --mount=type=cache,target=/var/cache/apt \
-    --mount=type=bind,source=docker/dependencies-build.txt,target=/tmp/dependencies-build.txt \
-    /root/docker-apt-install.sh /tmp/dependencies-build.txt
+    --mount=type=bind,source=docker/dependencies-build.txt,target=/dependencies-build.txt \
+    /root/docker-apt-install.sh /dependencies-build.txt
+
+# Pull in the binaries from our pinned uv-cli stage
+COPY --from=uv-cli /uv /uvx /usr/local/bin/
 
 # Install everything in venv for isolation from system python libraries
-# Replace UV_VERSION with the version required (use a minor version e.g. 0.8 to use the latest patch release)
-COPY --from=ghcr.io/astral-sh/uv:UV_VERSION /uv /uvx /usr/local/bin/
-
 RUN uv venv
 
 # The cache mount means a) /root/.cache is not in the image, and b) it's preserved
 # between docker builds locally, for faster dev rebuild.
-# Setting --directory /app lets `uv` detect the pyproject.toml, uv.lock etc.
+# Setting --directory /root lets `uv` detect the pyproject.toml, uv.lock etc.
 RUN --mount=type=cache,target=/root/.cache \
-    --mount=type=bind,source=.,target=/app \
-    uv sync --frozen --no-dev --no-install-project --directory /app
+    --mount=type=bind,source=pyproject.toml,target=/root/pyproject.toml \
+    --mount=type=bind,source=uv.lock,target=/root/uv.lock \
+    uv sync --frozen --no-dev --no-install-project --directory /root
 
 ##################################################
 #
@@ -156,14 +176,16 @@ LABEL org.opencontainers.image.revision=$GITREF
 #
 FROM new-project-base as new-project-dev
 
+# Pull in the binaries from our pinned uv-cli stage
+COPY --from=uv-cli /uv /uvx /bin/
+
 # install development requirements
 # we want to additionally sync dev dependencies into the venv;
 # prod dependencies are already installed and we don't want to remove them.
-# Replace UV_VERSION with the version required (use a minor version e.g. 0.8 to use the latest patch release)
-COPY --from=ghcr.io/astral-sh/uv:UV_VERSION /uv /uvx /bin/
 RUN --mount=type=cache,target=/root/.cache \
-    --mount=type=bind,source=.,target=/app \
-    uv sync --frozen --no-install-project --directory /app
+    --mount=type=bind,source=pyproject.toml,target=/root/pyproject.toml \
+    --mount=type=bind,source=uv.lock,target=/root/uv.lock \
+    uv sync --frozen --no-install-project --directory /root
 
 # Override ENTRYPOINT rather than CMD so we can pass arbitrary commands to the entrypoint script
 ENTRYPOINT ["/app/docker/entrypoints/dev.sh"]
