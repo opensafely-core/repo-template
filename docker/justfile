@@ -21,7 +21,7 @@ build env="dev": _dotenv
     test -z "${SKIP_BUILD:-}" || { echo "SKIP_BUILD set"; exit 0; }
     # build the thing
     export BUILD_DATE=$(date -u +'%y-%m-%dT%H:%M:%SZ')
-    export GITREF=$(Pgit rev-parse --short HEAD)
+    export GITREF=$(git rev-parse --short HEAD)
     docker compose build --pull {{ env }}
 
 
