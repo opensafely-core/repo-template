@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1
+# check=error=true
 #################################################
 #
 # Images are structured as shown in this diagram:
@@ -25,15 +26,16 @@
 # Create base image with python installed.
 # All Dockerfiles should start from the base-docker image
 
-# These build args are required, and are used in FROM lines, so need to be
-# declared globally
-ARG UBUNTU_VERSION
-ARG UV_VERSION
+# These build args have defaults, but are usually set from docker/.env. They
+# are used in FROM lines, so need to be declared globally and have defaults
+# set.
+ARG UBUNTU_VERSION=24.04
+ARG UV_VERSION=0.9
 
 # DL3007 ignored because base-docker we specifically always want to build on
 # the latest base image, by design.
 # hadolint ignore=DL3007
-FROM ghcr.io/opensafely-core/base-action:${UBUNTU_VERSION} as base-python
+FROM ghcr.io/opensafely-core/base-action:${UBUNTU_VERSION} AS base-python
 
 # we are going to use an apt cache on the host, so disable the default debian
 # docker clean up that deletes that cache on every apt install
@@ -78,7 +80,7 @@ ENV UV_PROJECT_ENVIRONMENT="/opt/venv"
 # See: https://github.com/moby/buildkit/issues/2412 for more infor
 #
 #
-FROM ghcr.io/astral-sh/uv:${UV_VERSION} as uv-cli
+FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv-cli
 
 ##################################################
 #
@@ -90,7 +92,7 @@ FROM ghcr.io/astral-sh/uv:${UV_VERSION} as uv-cli
 #
 # We use a separate, disposable build image to avoid carrying the build
 # dependencies into the production image.
-FROM base-python as builder
+FROM base-python AS builder
 
 # Install any system build dependencies
 RUN --mount=type=cache,target=/var/cache/apt \
@@ -127,7 +129,7 @@ RUN --mount=type=cache,target=/root/.cache \
 # 2) Ensures we *have* to mount the volume for dev image, as there's no embedded
 #    version of the code. Otherwise, we could end up accidentally using the
 #    version of the code included when the prod image was built.
-FROM base-python as new-project-base
+FROM base-python AS new-project-base
 
 RUN mkdir -p /app
 WORKDIR /app
@@ -144,7 +146,7 @@ COPY --from=builder /opt/venv /opt/venv
 # Production image (change the name from `new-project-prod`!)
 #
 # Copy code in, add proper metadata
-FROM new-project-base as new-project-prod
+FROM new-project-base AS new-project-prod
 
 # Adjust this metadata to fit project. Note that the base-docker image does set
 # some basic metadata.
@@ -174,7 +176,7 @@ LABEL org.opencontainers.image.revision=$GITREF
 # Now we build a dev image from our base project image. This is basically
 # installing dev dependencies and changing the entrypoint
 #
-FROM new-project-base as new-project-dev
+FROM new-project-base AS new-project-dev
 
 # Pull in the binaries from our pinned uv-cli stage
 COPY --from=uv-cli /uv /uvx /bin/
