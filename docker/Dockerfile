@@ -77,7 +77,7 @@ ENV UV_PROJECT_ENVIRONMENT="/opt/venv"
 # This allows us to specify the version in one place, and also works around
 # a limitation that you cannot use build args directly in `COPY --from`.
 #
-# See: https://github.com/moby/buildkit/issues/2412 for more infor
+# See: https://github.com/moby/buildkit/issues/2412 for more info
 #
 #
 FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv-cli
