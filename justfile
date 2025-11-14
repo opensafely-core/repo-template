@@ -158,9 +158,9 @@ check-lockfile:
 
 # Fix formatting, import sort ordering, and justfile
 fix:
-    uv run ruff check --fix .
-    uv run ruff format .
-    just --fmt --unstable
+    -uv run ruff check --fix .
+    -uv run ruff format .
+    -just --fmt --unstable
 
 # Run the dev project
 run: devenv
