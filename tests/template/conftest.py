@@ -15,6 +15,11 @@ from pathlib import Path
 import pytest
 
 
+def pytest_runtest_setup(item):
+    if os.path.exists("/.dockerenv"):  # pragma: nocover
+        pytest.skip("Skipping the template tests inside Docker")
+
+
 class LocalSimpleIndex:
     """A PEP 503 compliant simple file based index of packages.
 
