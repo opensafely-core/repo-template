@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 
-def get_exclude_newer_datetime(project_root: Path) -> datetime:
-    data = tomllib.loads((project_root / "pyproject.toml").read_text())
+def get_exclude_newer_datetime(project_dir: Path) -> datetime:
+    data = tomllib.loads((project_dir / "pyproject.toml").read_text())
     tool_uv = data.get("tool", {}).get("uv", {})
     cutoff_raw = tool_uv["exclude-newer"]
     return datetime.fromisoformat(cutoff_raw.replace("Z", "+00:00"))
@@ -41,7 +41,7 @@ def test_upgrade_all(project_copy: Path, local_index) -> None:
         "UV_EXTRA_INDEX_URL": "",
     }
 
-    # verify currently version
+    # verify current version
     assert_locked_version(project_copy, "coverage", current_version)
 
     # no new packages in our index, so should be no change

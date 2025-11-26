@@ -1,7 +1,6 @@
 import base64
 import hashlib
 import os
-import pathlib
 import re
 import shutil
 import subprocess
@@ -148,7 +147,7 @@ class LocalSimpleIndex:
 
 
 @pytest.fixture
-def uv_cache(tmp_path: Path, monkeypatch):
+def uv_cache(tmp_path, monkeypatch):
     """Ensure we have a clean cache for packaging tests, to avoid pollution."""
     monkeypatch.setitem(os.environ, "UV_CACHE_DIR", str(tmp_path / "uv-cache"))
     # also, make sure we don't emit ascii colours
@@ -156,7 +155,7 @@ def uv_cache(tmp_path: Path, monkeypatch):
 
 
 @pytest.fixture()
-def project_copy(tmp_path: pathlib.Path, monkeypatch) -> Path:
+def project_copy(tmp_path, monkeypatch) -> Path:
     """Copy the repo into a temp directory and stub git hooks for pre-commit."""
 
     monkeypatch.delitem(os.environ, "VIRTUAL_ENV")
@@ -184,9 +183,7 @@ def project_copy(tmp_path: pathlib.Path, monkeypatch) -> Path:
 
 
 @pytest.fixture()
-def local_index(
-    tmp_path: pathlib.Path, project_copy: Path, uv_cache
-) -> LocalSimpleIndex:
+def local_index(tmp_path, project_copy, uv_cache) -> LocalSimpleIndex:
     """Create a local PEP 503 index seeded with versions from uv.lock."""
 
     # first, ensure we have the correct versions for the current packages in
