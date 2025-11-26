@@ -5,6 +5,7 @@ This is a template for an OpenSAFELY Core repository.
 Put your project description here.
 
 New repo checklist:
+- [ ] Delete tests/template dir. These are tests for the template functionality, not the new project
 - [ ] Does the repo require a Dockerfile?
   If not, delete:
   - the `docker/` directory
