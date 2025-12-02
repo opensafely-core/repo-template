@@ -64,6 +64,7 @@ upgrade-all: && uvmirror devenv
 
 # update the uv mirror requirements file
 uvmirror file="requirements.uvmirror.txt":
+    rm -f {{ file }}
     uv export --format requirements-txt --frozen --no-hashes --all-groups --all-extras > {{ file }}
 
 # Move the cutoff date in pyproject.toml to N days ago (default: 7) at midnight UTC
