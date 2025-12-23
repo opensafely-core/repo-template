@@ -7,7 +7,7 @@ colorama==0.4.6 ; sys_platform == 'win32'
 coverage==7.13.0
 distlib==0.4.0
     # via virtualenv
-filelock==3.20.0
+filelock==3.20.1
     # via virtualenv
 identify==2.6.15
     # via pre-commit
@@ -27,6 +27,6 @@ pygments==2.19.2
 pytest==9.0.2
 pyyaml==6.0.3
     # via pre-commit
-ruff==0.14.8
+ruff==0.14.9
 virtualenv==20.35.4
     # via pre-commit
