@@ -7,7 +7,7 @@ colorama==0.4.6 ; sys_platform == 'win32'
 coverage==7.13.1
 distlib==0.4.0
     # via virtualenv
-filelock==3.20.1
+filelock==3.20.2
     # via virtualenv
 identify==2.6.15
     # via pre-commit
