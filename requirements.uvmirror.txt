@@ -8,7 +8,9 @@ coverage==7.13.4
 distlib==0.4.0
     # via virtualenv
 filelock==3.24.3
-    # via virtualenv
+    # via
+    #   python-discovery
+    #   virtualenv
 identify==2.6.16
     # via pre-commit
 iniconfig==2.3.0
@@ -18,15 +20,19 @@ nodeenv==1.10.0
 packaging==26.0
     # via pytest
 platformdirs==4.9.2
-    # via virtualenv
+    # via
+    #   python-discovery
+    #   virtualenv
 pluggy==1.6.0
     # via pytest
 pre-commit==4.5.1
 pygments==2.19.2
     # via pytest
 pytest==9.0.2
+python-discovery==1.1.0
+    # via virtualenv
 pyyaml==6.0.3
     # via pre-commit
-ruff==0.15.2
-virtualenv==20.38.0
+ruff==0.15.4
+virtualenv==21.1.0
     # via pre-commit
