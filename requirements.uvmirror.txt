@@ -7,11 +7,11 @@ colorama==0.4.6 ; sys_platform == 'win32'
 coverage==7.13.4
 distlib==0.4.0
     # via virtualenv
-filelock==3.24.3
+filelock==3.25.0
     # via
     #   python-discovery
     #   virtualenv
-identify==2.6.16
+identify==2.6.17
     # via pre-commit
 iniconfig==2.3.0
     # via pytest
