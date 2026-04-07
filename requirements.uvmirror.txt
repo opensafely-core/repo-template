@@ -26,13 +26,13 @@ platformdirs==4.9.4
 pluggy==1.6.0
     # via pytest
 pre-commit==4.5.1
-pygments==2.19.2
+pygments==2.20.0
     # via pytest
 pytest==9.0.2
-python-discovery==1.2.0
+python-discovery==1.2.1
     # via virtualenv
 pyyaml==6.0.3
     # via pre-commit
-ruff==0.15.7
+ruff==0.15.8
 virtualenv==21.2.0
     # via pre-commit
