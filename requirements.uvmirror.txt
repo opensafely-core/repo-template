@@ -33,6 +33,6 @@ python-discovery==1.2.1
     # via virtualenv
 pyyaml==6.0.3
     # via pre-commit
-ruff==0.15.8
+ruff==0.15.9
 virtualenv==21.2.0
     # via pre-commit
