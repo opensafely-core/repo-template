@@ -19,7 +19,7 @@ nodeenv==1.10.0
     # via pre-commit
 packaging==26.0
     # via pytest
-platformdirs==4.9.4
+platformdirs==4.9.6
     # via
     #   python-discovery
     #   virtualenv
@@ -28,11 +28,11 @@ pluggy==1.6.0
 pre-commit==4.5.1
 pygments==2.20.0
     # via pytest
-pytest==9.0.2
-python-discovery==1.2.1
+pytest==9.0.3
+python-discovery==1.2.2
     # via virtualenv
 pyyaml==6.0.3
     # via pre-commit
-ruff==0.15.9
-virtualenv==21.2.0
+ruff==0.15.10
+virtualenv==21.2.1
     # via pre-commit
