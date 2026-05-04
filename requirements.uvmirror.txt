@@ -17,7 +17,7 @@ iniconfig==2.3.0
     # via pytest
 nodeenv==1.10.0
     # via pre-commit
-packaging==26.1
+packaging==26.2
     # via pytest
 platformdirs==4.9.6
     # via
@@ -25,7 +25,7 @@ platformdirs==4.9.6
     #   virtualenv
 pluggy==1.6.0
     # via pytest
-pre-commit==4.5.1
+pre-commit==4.6.0
 pygments==2.20.0
     # via pytest
 pytest==9.0.3
@@ -33,6 +33,6 @@ python-discovery==1.2.2
     # via virtualenv
 pyyaml==6.0.3
     # via pre-commit
-ruff==0.15.11
+ruff==0.15.12
 virtualenv==21.2.4
     # via pre-commit
