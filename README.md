@@ -10,7 +10,6 @@ New repo checklist:
   If not, delete:
   - the `docker/` directory
   - .dockerignore
-  - hadolint pre-commit hook from `.pre-commit-config.yaml`
   - `lint-dockerfile` action from `.github/workflows/main.yml`
   If so:
   - run `grep -iR new-project docker` to find places where you need to insert information about your project
