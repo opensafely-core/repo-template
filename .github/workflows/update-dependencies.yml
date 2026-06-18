@@ -9,7 +9,7 @@ jobs:
   update-dependencies:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6.0.2
+    - uses: actions/checkout@v6.0.3
     - uses: "opensafely-core/setup-action@v1"
       with:
         install-uv: true
