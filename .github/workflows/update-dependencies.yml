@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v7.0.0
-    - uses: "opensafely-core/setup-action@v1"
+    - uses: "opensafely-core/setup-action@v1.6.1"
       with:
         install-uv: true
         install-just: true
