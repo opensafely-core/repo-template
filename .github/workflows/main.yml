@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7.0.0
-      - uses: "opensafely-core/setup-action@v1.6.1"
+      - uses: opensafely-core/setup-action@d9171097dd0d37bdb7bed58f701eb03ff317ed17 # v1.7.0
         with:
           install-uv: true
           install-just: true
@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7.0.0
-      - uses: "opensafely-core/setup-action@v1.6.1"
+      - uses: opensafely-core/setup-action@d9171097dd0d37bdb7bed58f701eb03ff317ed17 # v1.7.0
         with:
           install-uv: true
           install-just: true
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.0
-      - uses: "opensafely-core/setup-action@v1.6.1"
+      - uses: opensafely-core/setup-action@d9171097dd0d37bdb7bed58f701eb03ff317ed17 # v1.7.0
         with:
           install-uv: true
           install-just: true
