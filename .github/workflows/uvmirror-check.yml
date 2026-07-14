@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7.0.0
-      - uses: opensafely-core/setup-action@v1
+      - uses: opensafely-core/setup-action@d9171097dd0d37bdb7bed58f701eb03ff317ed17 # v1.7.0
         with:
           install-just: true
           install-uv: true
