@@ -1,9 +1,7 @@
 set dotenv-load := true
 set positional-arguments := true
-
 # List available commands
-default:
-    @"{{ just_executable() }}" --list
+set default-list := true  # requires just executable version >= 1.52.0
 
 # Create a valid .env if none exists
 _dotenv:
