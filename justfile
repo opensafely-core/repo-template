@@ -114,7 +114,7 @@ lint *args:
     uv run ruff check "$@" .
 
 lint-actions:
-    docker run --rm -v $(pwd):/repo:ro --workdir /repo rhysd/actionlint:1.7.8 -color
+    docker run --rm -v $(pwd):/repo:ro --workdir /repo rhysd/actionlint:1.7.8@sha256:96d4a8c87dbbfb3bdd324f8fdc285fc3df5261e2decc619a4dd7e8ee52bbfd46 -color
 
 # Run the various dev checks but does not change any files
 check:
