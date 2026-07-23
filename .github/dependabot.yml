@@ -17,3 +17,5 @@ updates:
       interval: "daily"
     # Setting this to 0 means that we get dependabot PRs for security updates only
     open-pull-requests-limit: 0
+    cooldown:
+      default-days: 7
