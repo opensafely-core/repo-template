@@ -5,6 +5,9 @@ on:
   schedule:
     - cron:  "0 8 * * 1" # every Monday at 8am
 
+permissions:
+  contents: read
+
 jobs:
   update-dependencies:
     runs-on: ubuntu-latest
