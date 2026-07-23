@@ -21,6 +21,16 @@ updates:
     cooldown:
       default-days: 7
 
+  - package-ecosystem: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Europe/London"
+    cooldown:
+      default-days: 7
+
   - package-ecosystem: "uv"
     directory: "/"
     schedule:
