@@ -9,7 +9,7 @@ def get_exclude_newer_datetime(project_dir: Path) -> datetime:
     data = tomllib.loads((project_dir / "pyproject.toml").read_text())
     tool_uv = data.get("tool", {}).get("uv", {})
     cutoff_raw = tool_uv["exclude-newer"]
-    return datetime.fromisoformat(cutoff_raw.replace("Z", "+00:00"))
+    return datetime.fromisoformat(cutoff_raw)
 
 
 def load_packages(project_dir):
