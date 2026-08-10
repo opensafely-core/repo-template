@@ -4,10 +4,10 @@ cfgv==3.5.0
     # via pre-commit
 colorama==0.4.6 ; sys_platform == 'win32'
     # via pytest
-coverage==7.15.2
+coverage==7.15.3
 distlib==0.4.3
     # via virtualenv
-filelock==3.32.0
+filelock==3.32.2
     # via
     #   python-discovery
     #   virtualenv
@@ -20,19 +20,17 @@ nodeenv==1.10.0
 packaging==26.2
     # via pytest
 platformdirs==4.11.0
-    # via
-    #   python-discovery
-    #   virtualenv
+    # via virtualenv
 pluggy==1.6.0
     # via pytest
 pre-commit==4.6.1
 pygments==2.20.0
     # via pytest
 pytest==9.1.1
-python-discovery==1.5.0
+python-discovery==1.5.1
     # via virtualenv
 pyyaml==6.0.3
     # via pre-commit
-ruff==0.16.0
-virtualenv==21.7.0
+ruff==0.16.1
+virtualenv==21.7.1
     # via pre-commit
