@@ -56,12 +56,8 @@ extend-ignore = [
 [tool.ruff.lint.isort]
 lines-after-imports = 2
 
-# Note: any `exclude-newer-package` timestamps should be removed if > 7 days old
-# See https://github.com/opensafely-core/repo-template/blob/main/DEVELOPERS.md for details
 [tool.uv]
 required-version = ">=0.9"
-exclude-newer = "2026-09-21T00:00:00Z"
-exclude-newer-package = {}
 
 [dependency-groups]
 dev = [
