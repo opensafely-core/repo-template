@@ -1,15 +1,8 @@
 import os
 import subprocess
 import tomllib
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-
-
-def get_exclude_newer_datetime(project_dir: Path) -> datetime:
-    data = tomllib.loads((project_dir / "pyproject.toml").read_text())
-    tool_uv = data.get("tool", {}).get("uv", {})
-    cutoff_raw = tool_uv["exclude-newer"]
-    return datetime.fromisoformat(cutoff_raw)
 
 
 def load_packages(project_dir):
@@ -28,8 +21,6 @@ def assert_locked_version(project_dir: Path, package: str, version: str) -> str:
 
 def test_upgrade_all(project_copy: Path, local_index) -> None:
     """Functional test of `upgrade all` just command."""
-
-    exclude_datetime = get_exclude_newer_datetime(project_copy)
     current_version = load_packages(project_copy)["coverage"]
     new_major = int(current_version.split(".")[0]) + 1
     target_version = f"{new_major}.0.0"
@@ -48,18 +39,17 @@ def test_upgrade_all(project_copy: Path, local_index) -> None:
     subprocess.run(["just", "upgrade-all"], cwd=project_copy, env=env, check=True)
     assert_locked_version(project_copy, "coverage", current_version)
 
+    # Default cooldown is 7 days ago from now
+    now = datetime.now(tz=UTC)
+
     # add new version to index, one day newer than the exclude date.
-    local_index.add_package(
-        "coverage", target_version, exclude_datetime + timedelta(days=1)
-    )
+    local_index.add_package("coverage", target_version, now - timedelta(days=6))
     subprocess.run(["just", "upgrade-all"], cwd=project_copy, env=env, check=True)
     # should not be upgraded, as is newer
     assert_locked_version(project_copy, "coverage", current_version)
 
     # add new version to index, one day earlier than the exclude date.
-    local_index.add_package(
-        "coverage", target_version, exclude_datetime - timedelta(days=1)
-    )
+    local_index.add_package("coverage", target_version, now - timedelta(days=8))
     subprocess.run(["just", "upgrade-all"], cwd=project_copy, env=env, check=True)
     # should now be upgraded
     assert_locked_version(project_copy, "coverage", target_version)
