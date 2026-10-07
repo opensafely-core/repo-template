@@ -1,3 +1,5 @@
+import 'justfile.base'
+
 set dotenv-load := true
 set positional-arguments := true
 
@@ -87,7 +89,7 @@ lint *args:
     uv run ruff check "$@" .
 
 lint-actions:
-    docker run --rm -v $(pwd):/repo:ro --workdir /repo kjanat/actionlint:1.17.0@sha256:d484cccadf56b6a356466ade9af4c8e05c5dce1badaf0a9ecd0d7639d68d9c92 -color
+    {{ docker_run_safe }} -v $(pwd):/repo:ro --workdir /repo kjanat/actionlint:1.17.0@sha256:d484cccadf56b6a356466ade9af4c8e05c5dce1badaf0a9ecd0d7639d68d9c92 -color
 
 # Run the various dev checks but does not change any files
 check:
