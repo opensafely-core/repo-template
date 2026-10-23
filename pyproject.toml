@@ -57,7 +57,7 @@ extend-ignore = [
 lines-after-imports = 2
 
 [tool.uv]
-required-version = ">=0.9"
+required-version = ">=0.13.5"
 
 [dependency-groups]
 dev = [
