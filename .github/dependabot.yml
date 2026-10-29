@@ -10,6 +10,9 @@ updates:
       timezone: "Europe/London"
     cooldown:
       default-days: 7
+    labels:
+      - "dependencies"
+      - "github_actions"
 
   - package-ecosystem: "docker"
     directory: "docker"
@@ -20,6 +23,9 @@ updates:
       timezone: "Europe/London"
     cooldown:
       default-days: 7
+    labels:
+      - "dependencies"
+      - "docker"
 
   - package-ecosystem: "pre-commit"
     directory: "/"
@@ -30,6 +36,8 @@ updates:
       timezone: "Europe/London"
     cooldown:
       default-days: 7
+    labels:
+      - "dependencies"
 
   - package-ecosystem: "uv"
     directory: "/"
@@ -42,3 +50,6 @@ updates:
     open-pull-requests-limit: 0
     cooldown:
       default-days: 7
+    labels:
+      - "dependencies"
+      - "python"
